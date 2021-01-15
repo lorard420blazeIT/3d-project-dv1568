@@ -6,16 +6,20 @@ workspace "3D prog project"
     project "3D prog project"
         location "3D prog Project"
         files {"%{prj.location}/src/**.cpp", "%{prj.location}/src/**.h"}
-        kind "ConsoleApp"
+        kind "WindowedApp"
         language "C++"
         cppdialect "C++14"
 
         targetdir "bin/%{cfg.buildcfg}"
         objdir "objects/%{cfg.buildcfg}"
 
+        links{
+            "d3d11"
+        }
+
         filter "configurations:Debug"
-            defines{"_DEBUG"}
+            defines{"_DEBUG", "_UNICODE", "UNICODE"}
             symbols "On"
         filter "configurations:Release"
-            defines{"NDEBUG"}
+            defines{"NDEBUG", "_UNICODE", "UNICODE"}
             optimize "On"
