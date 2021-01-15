@@ -1,0 +1,11 @@
+3D prog project/.vs/
+
+*.vcxproj
+
+*.filters
+
+*.sln
+
+3D prog project/bin/
+
+3D prog project/objects/
