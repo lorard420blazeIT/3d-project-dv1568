@@ -1,5 +1,15 @@
-#include <iostream>
+#pragma once
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
+#ifndef STRICT
+#define STRICT
+#endif
+
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <iostream>
 #include <d3d11.h>
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
