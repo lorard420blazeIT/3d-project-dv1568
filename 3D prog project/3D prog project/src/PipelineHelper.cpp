@@ -11,7 +11,7 @@ bool LoadShaders(ID3D11Device* device, ID3D11VertexShader*& vShader, ID3D11Pixel
 	std::ifstream reader;
 
 	//VertexShader
-	reader.open("../Debug/VertexShader.cso", std::ios::binary | std::ios::ate);
+	reader.open("../bin/Debug/VertexShader.cso", std::ios::binary | std::ios::ate);
 
 	if (!reader.is_open())
 	{
@@ -36,7 +36,7 @@ bool LoadShaders(ID3D11Device* device, ID3D11VertexShader*& vShader, ID3D11Pixel
 	reader.close();
 
 	//Pixelshader
-	reader.open("../Debug/PixelShader.cso", std::ios::binary | std::ios::ate);
+	reader.open("../bin/Debug/PixelShader.cso", std::ios::binary | std::ios::ate);
 
 	if (!reader.is_open())
 	{
