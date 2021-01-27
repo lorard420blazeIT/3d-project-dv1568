@@ -16,7 +16,7 @@ workspace "3D prog project"
         links{
             "d3d11"
         }
-
+	vpaths{["Headers"] = "**.h", ["Sources"] = {"**.c", "**.cpp"}}
         filter "configurations:Debug"
             defines{"_DEBUG", "_UNICODE", "UNICODE"}
             symbols "On"
