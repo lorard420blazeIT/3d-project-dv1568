@@ -5,7 +5,7 @@ workspace "3D prog project"
 
     project "3D prog project"
         location "3D prog Project"
-        files {"%{prj.location}/src/**.cpp", "%{prj.location}/src/**.h"}
+        files {"%{prj.location}/src/**.cpp", "%{prj.location}/src/**.h","%{prj.location}/src/**.hlsl"}
         kind "WindowedApp"
         language "C++"
         cppdialect "C++14"
@@ -16,7 +16,7 @@ workspace "3D prog project"
         links{
             "d3d11"
         }
-	vpaths{["Headers"] = "**.h", ["Sources"] = {"**.c", "**.cpp"}}
+	vpaths{["Headers"] = "**.h", ["Sources"] = {"**.c", "**.cpp"},["Shaders"] = "**.hlsl"}
         filter "configurations:Debug"
             defines{"_DEBUG", "_UNICODE", "UNICODE"}
             symbols "On"

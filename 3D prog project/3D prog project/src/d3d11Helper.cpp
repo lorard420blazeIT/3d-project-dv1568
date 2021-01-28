@@ -31,7 +31,7 @@ bool CreateInterface(UINT width, UINT height, HWND window, ID3D11Device*& device
 
 	HRESULT hr = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, flags, featureLevels, 1, D3D11_SDK_VERSION, &swapChainDesc, &swapChain, &device, nullptr, &immadeiateContext);
 
-	assert(SUCCEEDED(hr)); //gnäller ifall den inte sucess, fråga Grotto igen
+	//assert(SUCCEEDED(hr)); //gnäller ifall den inte sucess, fråga Grotto igen
 	return !FAILED(hr);
 }
 

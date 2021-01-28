@@ -1,10 +1,11 @@
 #include <Windows.h>
 #include <iostream>
 #include <d3d11.h>
-#include "windowHelper.h"
 #include "d3d11Helper.h"
-#include "PipelineHelper.h"
 #include <chrono>
+#include "PipelineHelper.h"
+#include "windowHelper.h"
+
 
 void Render(ID3D11DeviceContext* immediateConxtex, ID3D11RenderTargetView* rtv, ID3D11DepthStencilView* dsView, D3D11_VIEWPORT& viewport, ID3D11VertexShader* vShader, ID3D11PixelShader* pShader
 	, ID3D11InputLayout* inputLayout, ID3D11Buffer* vertexBuffer, ID3D11ShaderResourceView* textureSRV, ID3D11SamplerState* sampler)
@@ -74,13 +75,16 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevIntance,
 	if (!SetupD3D11(HEIGHT, WIDTH, window, device, immediateConxtex, swapChain, rtv, dsTexture, dsView, viewport))
 	{
 		std::cerr << "Failed to create D3D11!" << std::endl;
+		
 		return -1;
 	}
 
 	if (!SetupPipeline(device, vertexBuffer, vShader, pShader, inputLayout, texture, textureSRV, sampler, filePath, constantBufferObj, constantBufferLight))
 	{
 		std::cerr << "Failed to setup pipeline!" << std::endl;
+		
 		return -1;
+		
 	}
 
 	MSG msg = {};
@@ -130,6 +134,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevIntance,
 	swapChain->Release();
 	immediateConxtex->Release();
 	device->Release();
-
+	
 	return 0;
 }

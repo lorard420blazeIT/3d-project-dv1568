@@ -207,7 +207,6 @@ bool CreateTexture(ID3D11Device* device, ID3D11Texture2D*& texture, ID3D11Shader
 	int textureHeight = 0;
 	int channels = sizeof(textureWidth);
 
-	std::string fileName = "../Texture/this-is-fine-Charlie.png";
 
 	//Check if file exist
 	std::ifstream ifile;
