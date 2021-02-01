@@ -1,5 +1,19 @@
 #include "Window.h"
 
+LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) //More??
+{
+	//Ifall meddelandet är DESTROY(när vi stänger fönstret) så stänger vi ner programmet
+	switch (message)
+	{
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	default: //Annars ba break
+		break;
+	}
+	return DefWindowProc(hWnd, message, wParam, lParam); //Default hantering av messeges 
+}
+
 void Window::window(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win)
 {
 	this->instance = instance;
@@ -15,7 +29,7 @@ bool Window::setUpWindow()
 
 	WNDCLASS wc = {};
 
-	wc.lpfnWndProc = WindowProc;
+	wc.lpfnWndProc = WinProc;
 	wc.hInstance = instance;
 	wc.lpszClassName = CLASS_NAME;
 
@@ -25,7 +39,7 @@ bool Window::setUpWindow()
 	//(optional styling = default, klassnamn, namn, style, default pos, ignorerar y, bredd, höjd, igen parentWindow, ingen meny, hanterar instance, ingen extra data)
 	win = CreateWindowEx(0, CLASS_NAME, L"Demo Window", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, width, height, nullptr, nullptr, instance, nullptr);
 
-	if (window == nullptr) //Kollar ifall de gick och ger felmedelande ifall de inte gick
+	if (win == nullptr) //Kollar ifall de gick och ger felmedelande ifall de inte gick
 	{
 		std::cerr << "HWND was nullptr, last error: " << GetLastError() << std::endl;
 		return false;
@@ -51,18 +65,4 @@ bool Window::setUpConsole()
 	freopen_s(&fp, "CONOUT$", "w", stderr); // Så cerr syns i konsol fönstret
 
 	return true;
-}
-
-LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) //More??
-{
-	//Ifall meddelandet är DESTROY(när vi stänger fönstret) så stänger vi ner programmet
-	switch (message) 
-	{
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-	default: //Annars ba break
-		break;
-	}
-	return DefWindowProc(hWnd, message, wParam, lParam); //Default hantering av messeges 
 }
