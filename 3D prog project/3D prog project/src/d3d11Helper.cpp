@@ -86,12 +86,6 @@ void SetViewPort(D3D11_VIEWPORT& viewport, UINT width, UINT height)
 	viewport.MaxDepth = 1;
 }
 
-void moveWindow(HWND window, UINT xPos, UINT yPos) 
-{
-	SetWindowPos(window, nullptr, xPos, yPos, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-	//Tar ej in negativa värden
-}
-
 bool SetupD3D11(UINT width, UINT height, HWND window, ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, IDXGISwapChain*& swapChain, ID3D11RenderTargetView*& rtv, ID3D11Texture2D*& dsTexture, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport)
 {
 	if (!CreateInterface(width, height, window, device, immadeiateContect, swapChain))

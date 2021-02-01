@@ -62,3 +62,9 @@ bool Window::setUpConsole()
 
 	return true;
 }
+
+void Window::moveWindow(HWND window, UINT xPos, UINT yPos)
+{
+	//Tar ej in negativa värden
+	SetWindowPos(window, nullptr, xPos, yPos, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
