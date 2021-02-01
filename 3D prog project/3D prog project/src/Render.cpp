@@ -1,7 +1,8 @@
 #include "Render.h"
 
-Render Render::render()
+void Render::render()
 {
+
 	float clearColor[4] = { 0, 0, 0, 0 };
 	immediateConxtex->ClearRenderTargetView(rtv, clearColor);
 	immediateConxtex->ClearDepthStencilView(dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);

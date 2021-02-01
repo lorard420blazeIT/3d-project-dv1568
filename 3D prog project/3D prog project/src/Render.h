@@ -7,7 +7,7 @@ private:
 
 
 public:
-	Render render();
+	void render();
 	ID3D11DeviceContext* immediateConxtex;
 	ID3D11RenderTargetView* rtv;
 	ID3D11DepthStencilView* dsView;
