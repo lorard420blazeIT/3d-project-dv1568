@@ -1,22 +1,11 @@
 #include "Render.h"
 
-Render::Render(ID3D11DeviceContext* immediateConxtex, ID3D11RenderTargetView* rtv, ID3D11DepthStencilView* dsView, D3D11_VIEWPORT viewport, ID3D11VertexShader* vShader, ID3D11PixelShader* pShader, ID3D11InputLayout* inputLayout, ID3D11Buffer* vertexBuffer, ID3D11ShaderResourceView* textureSRV, ID3D11SamplerState* sampler)
+Render::Render()
 {
-	this->immediateConxtex = immediateConxtex;
-	this->rtv = rtv;
-	this->dsView = dsView;
-	this->inputLayout = inputLayout;
-	this->pShader = pShader;
-	this->sampler = sampler;
-	this->vShader = vShader;
-	this->viewport = viewport;
-	this->vertexBuffer = vertexBuffer;
-	this->textureSRV = textureSRV;
 }
 
 void Render::render(ID3D11DeviceContext* immediateConxtex, ID3D11RenderTargetView* rtv, ID3D11DepthStencilView* dsView, D3D11_VIEWPORT viewport, ID3D11VertexShader* vShader, ID3D11PixelShader* pShader, ID3D11InputLayout* inputLayout, ID3D11Buffer* vertexBuffer, ID3D11ShaderResourceView* textureSRV, ID3D11SamplerState* sampler)
 {
-
 	float clearColor[4] = { 0, 0, 0, 0 };
 	immediateConxtex->ClearRenderTargetView(rtv, clearColor);
 	immediateConxtex->ClearDepthStencilView(dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);

@@ -14,16 +14,12 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	return DefWindowProc(hWnd, message, wParam, lParam); //Default hantering av messeges 
 }
 
-void Window::window(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win)
+Window::Window()
 {
-	this->instance = instance;
-	this->height = height;
-	this->width = width;
-	this->nCmdShow = nCmdShow;
-	this->win = win;
 }
 
-bool Window::setUpWindow()
+
+bool Window::setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win)
 {
 	const wchar_t CLASS_NAME[] = L"Demo WindowClass"; //L = wide
 

@@ -1,37 +1,80 @@
 #include "Engine.h"
 
-Engine Engine::engine()
+
+Engine::Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine, int& nCmdShow)
+	:nCmdShow(nCmdShow), instance(hinstance)
 {
-	return Engine();
-}
+	//stuff in update
+	msg = {};
+	deltaTime = 0;
+	currentRotation = 0;
+	speed = 0.5f;
 
-void Engine::render(ID3D11DeviceContext* immediateConxtex, ID3D11RenderTargetView* rtv, ID3D11DepthStencilView* dsView, D3D11_VIEWPORT& viewport, ID3D11VertexShader* vShader, ID3D11PixelShader* pShader
-	, ID3D11InputLayout* inputLayout, ID3D11Buffer* vertexBuffer, ID3D11ShaderResourceView* textureSRV, ID3D11SamplerState* sampler)
-{
+	//Light stuff
+	lightFrame.ambient = { 0.3f, 0.3f, 0.3f };
+	lightFrame.pos = { 0, 0, -3 };
+	lightFrame.color = { 1, 1, 1 };
+	lightFrame.specPower = 128.0f;
 
-	float clearColor[4] = { 0, 0, 0, 0 };
-	immediateConxtex->ClearRenderTargetView(rtv, clearColor);
-	immediateConxtex->ClearDepthStencilView(dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
-
-	UINT stride = sizeof(SimpleVertex);
-	UINT offset = 0;
-
-	immediateConxtex->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
-	immediateConxtex->IASetInputLayout(inputLayout);
-	immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	immediateConxtex->VSSetShader(vShader, nullptr, 0);
-	immediateConxtex->RSSetViewports(1, &viewport);
-	immediateConxtex->PSSetShader(pShader, nullptr, 0);
-	immediateConxtex->PSSetShaderResources(0, 1, &textureSRV);
-	immediateConxtex->PSSetSamplers(0, 1, &sampler);
-	immediateConxtex->OMSetRenderTargets(1, &rtv, dsView);
-
-	immediateConxtex->Draw(6, 0);
-
+	textureFilePath = "../Texture/this-is-fine-Charlie.png";
 
 }
 
-void Engine::relese()
+bool Engine::SetUp()
+{
+	//Setup stuff
+	if (!windowMain.setUpWindow(instance, WIDTH, HEIGHT, nCmdShow, winHWND))
+	{
+		std::cerr << "Failed to setup Window" << std::endl;
+		return -1;
+	}
+	if (!windowMain.setUpConsole())
+	{
+		std::cerr << "Failed to setup console" << std::endl;
+		return -1;
+	}
+	if (!SetupD3D11(HEIGHT, WIDTH, winHWND, device, immediateConxtex, swapChain, rtv, dsTexture, dsView, viewport))
+	{
+		std::cerr << "Failed to create D3D11!" << std::endl;
+		return -1;
+	}
+	if (!SetupPipeline(device, vertexBuffer, vShader, pShader, inputLayout, texture, textureSRV, sampler, textureFilePath, constantBufferObj, constantBufferLight))
+	{
+		std::cerr << "Failed to setup pipeline!" << std::endl;
+		return -1;
+	}
+
+	return true;
+}
+
+
+void Engine::Update()
+{
+	auto timeStart = clock.now();
+	auto timeStop = clock.now();
+
+	while (msg.message != WM_QUIT)
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+
+		timeStop = clock.now();
+
+		using ms = std::chrono::duration<float, std::milli>;
+		deltaTime = std::chrono::duration_cast<ms>(timeStop - timeStart).count() / 1000;
+
+		currentRotation = deltaTime * speed;
+
+		render.render(immediateConxtex, rtv, dsView, viewport, vShader, pShader, inputLayout, vertexBuffer, textureSRV, sampler);
+		swapChain->Present(0, 0);
+		UpdateBuffer(constantBufferObj, constantBufferLight, immediateConxtex, &frame, currentRotation, &lightFrame);
+	}
+}
+
+void Engine::ReleaseAll()
 {
 	constantBufferLight->Release();
 	constantBufferObj->Release();
@@ -48,4 +91,14 @@ void Engine::relese()
 	swapChain->Release();
 	immediateConxtex->Release();
 	device->Release();
+}
+
+void Engine::Run()
+{
+	if (!SetUp())
+	{
+		std::cerr << "Failed to setup" << std::endl;
+	}
+	Update();
+	ReleaseAll();
 }

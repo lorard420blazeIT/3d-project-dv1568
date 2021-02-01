@@ -213,11 +213,11 @@ bool CreateTexture(ID3D11Device* device, ID3D11Texture2D*& texture, ID3D11Shader
 	ifile.open(filePath);
 	if (ifile) 
 	{
-		std::cout << "file exists";
+		std::cout << "file exists" << std::endl;
 	}
 	else 
 	{
-		std::cout << "file doesn't exist";
+		std::cout << "file doesn't exist" << std::endl;
 	}
 
 	unsigned char* image = stbi_load(filePath.c_str(), &textureWidth, &textureHeight, &channels, STBI_rgb_alpha);

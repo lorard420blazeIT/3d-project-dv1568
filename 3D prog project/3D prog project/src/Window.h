@@ -14,7 +14,7 @@ private:
 	HWND win;
 
 public:
-	void window(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win);
-	bool setUpWindow();
+	Window();
+	bool setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win);
 	bool setUpConsole();
 };
