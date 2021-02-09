@@ -13,13 +13,20 @@ workspace "3D prog project"
         targetdir "bin/%{cfg.buildcfg}"
         objdir "objects/%{cfg.buildcfg}"
 
+        includedirs{"include/directXtk/"}
+
         links{
             "d3d11"
         }
 	vpaths{["Headers"] = "**.h", ["Sources"] = {"**.c", "**.cpp"},["Shaders"] = "**.hlsl"}
         filter "configurations:Debug"
+            libdirs{"lib/directXtk/x64/Debug/**"}
+            links{"directXtk"}
+
             defines{"_DEBUG", "_UNICODE", "UNICODE"}
             symbols "On"
         filter "configurations:Release"
+            libdirs{"lib/directXtk/x64/Release/**"}
+            links{"directXtk"}
             defines{"NDEBUG", "_UNICODE", "UNICODE"}
             optimize "On"

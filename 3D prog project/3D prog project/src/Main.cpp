@@ -1,6 +1,7 @@
 #include <Windows.h>
 #include <iostream>
 #include <d3d11.h>
+#pragma comments(lib,"d3d11.lib")
 #include "d3d11Helper.h"
 #include <chrono>
 #include "PipelineHelper.h"
@@ -13,7 +14,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevIntance,
 #if _DEBUG
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-
+	DirectX::Keyboard keybord;
 	Engine engine(hInstance, hPrevIntance, lpmCmdLine, nCmdShow);
 	engine.Run();
 
