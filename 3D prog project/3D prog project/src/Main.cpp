@@ -8,6 +8,7 @@
 #include "windowHelper.h"
 #include "Render.h"
 #include "Engine.h"
+#include <Keyboard.h>
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevIntance, _In_ LPWSTR lpmCmdLine, _In_ int nCmdShow)
 {
