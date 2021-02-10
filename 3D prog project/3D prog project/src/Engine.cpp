@@ -2,7 +2,7 @@
 
 
 Engine::Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine, int& nCmdShow)
-	:nCmdShow(nCmdShow), instance(hinstance) //, input(WIDTH, HEIGHT)
+	:nCmdShow(nCmdShow), instance(hinstance) , input(WIDTH, HEIGHT), cam(WIDTH, HEIGHT)
 {
 	//stuff in update
 	msg = {};
@@ -43,7 +43,6 @@ bool Engine::SetUp()
 		std::cerr << "Failed to setup pipeline!" << std::endl;
 		return false;
 	}
-
 	return true;
 }
 
@@ -53,7 +52,7 @@ void Engine::Update()
 	auto timeStart = clock.now();
 	auto timeStop = clock.now();
 
-	while (msg.message != WM_QUIT)
+	while (msg.message != WM_QUIT && !input.KeyPressed(KEY(Escape)))
 	{
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
@@ -67,10 +66,17 @@ void Engine::Update()
 		deltaTime = std::chrono::duration_cast<ms>(timeStop - timeStart).count() / 1000;
 
 		currentRotation = deltaTime * speed;
+		//input.Update();
+		if (input.KeyPressed(KEY(F)))
+		{
+			std::cout << "pressed F" << std::endl;
+		}
+		input.test();
+		moveCamera();
 
 		render.render(immediateConxtex, rtv, dsView, viewport, vShader, pShader, inputLayout, vertexBuffer, textureSRV, sampler);
 		swapChain->Present(0, 0);
-		UpdateBuffer(constantBufferObj, constantBufferLight, immediateConxtex, &frame, currentRotation, &lightFrame);
+		UpdateBuffer(constantBufferObj, constantBufferLight, immediateConxtex, &frame, currentRotation, &lightFrame, cam);
 	}
 }
 
@@ -102,3 +108,65 @@ void Engine::Run()
 	Update();
 	ReleaseAll();
 }
+
+void Engine::moveCamera()
+{
+
+	if (input.KeyPressed(KEY(W)))
+	{
+		cam.move(0, 0, 5);
+		std::cout << "pressed W" << std::endl;
+	}
+
+	if (input.KeyPressed(KEY(A)))
+	{
+		std::cout << "pressed A" << std::endl;
+	}
+
+	if (input.KeyPressed(KEY(S)))
+	{
+		std::cout << "pressed S" << std::endl;
+	}
+
+	if (input.KeyPressed(KEY(D)))
+	{
+		std::cout << "pressed D" << std::endl;
+	}
+
+	if (input.KeyPressed(KEY(Home)))
+	{
+		std::cout << "pressed home" << std::endl;
+	}
+
+
+
+	//dx::XMFLOAT3 move = { 0,0,0 };
+
+	//if (kb.Up || kb.W)
+	//{
+	//	move.y += speed;
+	//	std::cout << "up" << std::endl;
+	//}
+
+	//if (kb.Down || kb.S)
+	//{
+	//	move.y -= speed;
+	//}
+
+	//if (kb.Left || kb.A)
+	//{
+	//	move.x += speed;
+	//}
+
+	//if (kb.Right || kb.D)
+	//{
+	//	move.x -= speed;
+	//}
+	//
+	//sm::Quaternion q = dx::XMQuaternionRotationRollPitchYaw(roll, pitch, yaw);
+	//
+	//pos = dx::XMVectorSet(move.x, move.y, move.z, 0);
+
+	//view = dx::XMMatrixLookAtLH(pos, target, up);
+}
+

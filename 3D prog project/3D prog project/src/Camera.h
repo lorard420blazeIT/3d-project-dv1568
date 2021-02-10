@@ -13,8 +13,11 @@ namespace dx = DirectX;
 class Camera
 {
 private:
+	float x = 0.f;
+	float y = 0.f;
+	float z = -3.f;
 
-	dx::XMVECTOR pos = dx::XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
+	dx::XMVECTOR pos = dx::XMVectorSet(0.0f, 0.0f, -3, 0.0f);
 	dx::XMVECTOR startPos;
 	dx::XMVECTOR target = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	dx::XMVECTOR up = dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -27,16 +30,15 @@ private:
 	//std::unique_ptr<dx::Keyboard> keyboard;
 	//std::unique_ptr<dx::Mouse> mouse;
 	float speed = 1.f;
-
-	HWND win;
 	float width, height;
 
 public:
 	Camera();
-	Camera(HWND win, float width, float height);
+	Camera(float width, float height);
 	~Camera();
 	void Update();
 	void SetPos(float x, float y, float z);
+	void move(float x, float y, float z);
 	dx::XMFLOAT4X4 getView();
 	dx::XMFLOAT4X4 getPP();
 	dx::XMFLOAT3 getPos();

@@ -8,6 +8,10 @@
 #include "Render.h"
 #include "Camera.h"
 #include "InputHandler.h"
+#include "SimpleMath.h"
+
+namespace dx = DirectX;
+namespace sm = DirectX::SimpleMath;
 
 class Engine
 {
@@ -17,7 +21,8 @@ private:
 
 	cbFrameObj frame;
 	cbFrameLight lightFrame;
-	//InputHandler input;
+	InputHandler input;
+	Camera cam;
 
 	//For update 
 	MSG msg;
@@ -59,5 +64,7 @@ public:
 	void Update();
 	void ReleaseAll();
 	void Run();
+
+	void moveCamera();
 
 };

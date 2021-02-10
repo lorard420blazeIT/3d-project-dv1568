@@ -1,48 +1,30 @@
 #pragma once
-#include "Keyboard.h"
-#include "Mouse.h"
 #include <Windows.h>
 #include <iostream>
 #include <string>
+#include "Keyboard.h"
+#include "Mouse.h"
+//#include <winrt\Windows.UI.Core.h>
 
 namespace dx = DirectX;
+#define KEY(X) dx::Keyboard::X
 
 class InputHandler
 {
 private:
     int width;
     int height;
-    dx::Keyboard keyboard;
-    dx::Keyboard::KeyboardStateTracker tracker;
+    std::unique_ptr<dx::Keyboard> keyboard;
+    dx::Keyboard::KeyboardStateTracker keyTracker;
 
 public:
-	InputHandler();
+    InputHandler();
     InputHandler(int width, int height);
-	~InputHandler();
-    void Updater() {
-        keyboard.GetState();
-    }
-    bool GetKeyDown(dx::Keyboard::Keys key) const 
-    {
-        return tracker.IsKeyPressed(key);
-        
-    }
-    void test() {
-        if (keyboard.GetState().IsKeyDown(dx::Keyboard::Space))
-        {
-            std::cout << "TEST input" << std::endl;
-        }
-    }
+    ~InputHandler();
+    void Update();
+    bool KeyPressed(dx::Keyboard::Keys key);
+    void test();
 
-    //Singleton
-    static InputHandler& Instance() 
-    {
-        static InputHandler instance;
-        return instance;
-    }
-
-    InputHandler(InputHandler const&) = delete;
-    void operator=(InputHandler const&) = delete;
 };
 
 /* void test() {

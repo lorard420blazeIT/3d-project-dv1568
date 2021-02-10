@@ -154,11 +154,10 @@ bool CreateCbLight(ID3D11Device* device, ID3D11Buffer*& constantBuffer) //Use 1 
 	return !FAILED(hr);
 }
 
-void UpdateBuffer(ID3D11Buffer*& cbPerObj, ID3D11Buffer*& cbLight, ID3D11DeviceContext* immediateConxtex, cbFrameObj* frameBuffer, float& rot,  cbFrameLight* lightBuffer)
+void UpdateBuffer(ID3D11Buffer*& cbPerObj, ID3D11Buffer*& cbLight, ID3D11DeviceContext* immediateConxtex, cbFrameObj* frameBuffer, float& rot,  cbFrameLight* lightBuffer, Camera &cam)
 {
 	//Flags??? -> projekt
 
-	Camera cam;
 	dx::XMMATRIX world = dx::XMMatrixIdentity();
 	dx::XMMATRIX translate = dx::XMMatrixIdentity();
 	dx::XMMATRIX scale = dx::XMMatrixIdentity();

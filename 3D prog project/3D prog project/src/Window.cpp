@@ -2,12 +2,22 @@
 
 LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) //More??
 {
-	//Ifall meddelandet är DESTROY(när vi stänger fönstret) så stänger vi ner programmet
 	switch (message)
 	{
-	case WM_DESTROY:
+	case WM_DESTROY: 	//Ifall meddelandet är DESTROY(när vi stänger fönstret) så stänger vi ner programmet
 		PostQuitMessage(0);
 		return 0;
+
+	case WM_ACTIVATEAPP:
+		dx::Keyboard::ProcessMessage(message, wParam, lParam);
+		break;
+
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		dx::Keyboard::ProcessMessage(message, wParam, lParam);
+		break;
 
 	default: //Annars ba break
 		break;
