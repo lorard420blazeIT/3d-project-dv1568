@@ -20,13 +20,13 @@ workspace "3D prog project"
         }
 	vpaths{["Headers"] = "**.h", ["Sources"] = {"**.c", "**.cpp"},["Shaders"] = "**.hlsl"}
         filter "configurations:Debug"
-            libdirs{"lib/directXtk/x64/Debug/**"}
-            links{"directXtk"}
+            libdirs{"lib/directXtk/x64/Debug/"}
+            links{"DirectXTK"}
 
             defines{"_DEBUG", "_UNICODE", "UNICODE"}
             symbols "On"
         filter "configurations:Release"
-            libdirs{"lib/directXtk/x64/Release/**"}
-            links{"directXtk"}
+            libdirs{"lib/directXtk/x64/Release/"}
+            links{"DirectXTK"}
             defines{"NDEBUG", "_UNICODE", "UNICODE"}
             optimize "On"
