@@ -6,12 +6,18 @@
 #include "PipelineHelper.h"
 #include "Window.h"
 #include "Render.h"
+#include "Camera.h"
+#include "InputHandler.h"
 
 class Engine
 {
 private:
+	const UINT WIDTH = 700;
+	const UINT HEIGHT = 500;
+
 	cbFrameObj frame;
 	cbFrameLight lightFrame;
+	//InputHandler input;
 
 	//For update 
 	MSG msg;
@@ -23,8 +29,7 @@ private:
 
 	//Window stuff
 	Window windowMain;
-	const UINT WIDTH = 700;
-	const UINT HEIGHT = 500;
+	
 	HWND winHWND;
 	HINSTANCE instance;
 	int nCmdShow;

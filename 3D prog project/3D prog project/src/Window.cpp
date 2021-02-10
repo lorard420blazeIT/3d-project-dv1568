@@ -8,9 +8,11 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
+
 	default: //Annars ba break
 		break;
 	}
+
 	return DefWindowProc(hWnd, message, wParam, lParam); //Default hantering av messeges 
 }
 
@@ -21,6 +23,9 @@ Window::Window()
 
 bool Window::setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win)
 {
+	this->height = height;
+	this->width = width;
+
 	const wchar_t CLASS_NAME[] = L"Demo WindowClass"; //L = wide
 
 	WNDCLASS wc = {};
@@ -67,4 +72,14 @@ void Window::moveWindow(HWND window, UINT xPos, UINT yPos)
 {
 	//Tar ej in negativa värden
 	SetWindowPos(window, nullptr, xPos, yPos, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
+
+float Window::getHeight()
+{
+	return height;
+}
+
+float Window::getWidth()
+{
+	return width;
 }

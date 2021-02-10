@@ -3,20 +3,28 @@
 #include <io.h>
 #include <fcntl.h>
 #include <iostream>
+#include "Keyboard.h"
+#include "Mouse.h"
+#include <d3d11.h>
 
-class Window 
+namespace dx = DirectX;
+
+class Window
 {
 private:
 	//Används inte just nu 
-	/*HINSTANCE instance;
-	UINT height;
-	UINT width;
+	HINSTANCE instance;
+	float height;
+	float width;
 	int nCmdShow;
-	HWND win;*/
+	HWND win;
+
 
 public:
 	Window();
 	bool setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win);
 	bool setUpConsole();
 	void moveWindow(HWND window, UINT xPos, UINT yPos);
+	float getHeight();
+	float getWidth();
 };

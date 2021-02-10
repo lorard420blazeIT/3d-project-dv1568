@@ -2,7 +2,7 @@
 
 
 Engine::Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine, int& nCmdShow)
-	:nCmdShow(nCmdShow), instance(hinstance)
+	:nCmdShow(nCmdShow), instance(hinstance) //, input(WIDTH, HEIGHT)
 {
 	//stuff in update
 	msg = {};
@@ -26,22 +26,22 @@ bool Engine::SetUp()
 	if (!windowMain.setUpWindow(instance, WIDTH, HEIGHT, nCmdShow, winHWND))
 	{
 		std::cerr << "Failed to setup Window" << std::endl;
-		return -1;
+		return false;
 	}
 	if (!windowMain.setUpConsole())
 	{
 		std::cerr << "Failed to setup console" << std::endl;
-		return -1;
+		return false;
 	}
 	if (!SetupD3D11(HEIGHT, WIDTH, winHWND, device, immediateConxtex, swapChain, rtv, dsTexture, dsView, viewport))
 	{
 		std::cerr << "Failed to create D3D11!" << std::endl;
-		return -1;
+		return false;
 	}
 	if (!SetupPipeline(device, vertexBuffer, vShader, pShader, inputLayout, texture, textureSRV, sampler, textureFilePath, constantBufferObj, constantBufferLight))
 	{
 		std::cerr << "Failed to setup pipeline!" << std::endl;
-		return -1;
+		return false;
 	}
 
 	return true;

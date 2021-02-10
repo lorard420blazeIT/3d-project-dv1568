@@ -10,6 +10,7 @@ namespace dx = DirectX;
 #include <stdio.h>
 #include <WinnT.h>
 #include <string>
+#include "Camera.h"
 
 struct  SimpleVertex 
 {

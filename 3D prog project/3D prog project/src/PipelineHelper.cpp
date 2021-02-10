@@ -157,6 +157,8 @@ bool CreateCbLight(ID3D11Device* device, ID3D11Buffer*& constantBuffer) //Use 1 
 void UpdateBuffer(ID3D11Buffer*& cbPerObj, ID3D11Buffer*& cbLight, ID3D11DeviceContext* immediateConxtex, cbFrameObj* frameBuffer, float& rot,  cbFrameLight* lightBuffer)
 {
 	//Flags??? -> projekt
+
+	Camera cam;
 	dx::XMMATRIX world = dx::XMMatrixIdentity();
 	dx::XMMATRIX translate = dx::XMMatrixIdentity();
 	dx::XMMATRIX scale = dx::XMMatrixIdentity();
@@ -164,23 +166,14 @@ void UpdateBuffer(ID3D11Buffer*& cbPerObj, ID3D11Buffer*& cbLight, ID3D11DeviceC
 	dx::XMMATRIX view = dx::XMMatrixIdentity();
 	dx::XMMATRIX perspectiveProjection = dx::XMMatrixIdentity();
 
-	dx::XMVECTOR camPos;
-	dx::XMVECTOR camTarget;
-	dx::XMVECTOR camUp;
-
 	translate = dx::XMMatrixTranslation(0.0f, 0.0f, -1.5f);
 	scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	rotate = dx::XMMatrixRotationRollPitchYawFromVector({ 0, rot, 0 });
 
 	world = scale * translate * rotate ;
 
-	camPos = dx::XMVectorSet(0.0f, 0.0f, -3.0f, 0.0f);
-	camTarget = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	camUp = dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	view = dx::XMMatrixLookAtLH(camPos, camTarget, camUp);
-
-	perspectiveProjection = dx::XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)1000 / 800, 1.0f, 1000.0f);
+	view = dx::XMLoadFloat4x4(&cam.getView());
+	perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
 
 	dx::XMMATRIX wvp = world * view * perspectiveProjection;
 	dx::XMFLOAT4X4 saveMe;
@@ -193,9 +186,7 @@ void UpdateBuffer(ID3D11Buffer*& cbPerObj, ID3D11Buffer*& cbLight, ID3D11DeviceC
 	immediateConxtex->PSSetConstantBuffers(0, 1, &cbPerObj);
 	immediateConxtex->VSSetConstantBuffers(0, 1, &cbPerObj);
 
-	dx::XMFLOAT3 saveMe2;
-	dx::XMStoreFloat3(&saveMe2, camPos);
-	lightBuffer->camPos = saveMe2;
+	lightBuffer->camPos = cam.getPos();
 
 	immediateConxtex->UpdateSubresource(cbLight, 0, nullptr, lightBuffer, 0, 0);
 	immediateConxtex->PSSetConstantBuffers(0, 1, &cbLight);
