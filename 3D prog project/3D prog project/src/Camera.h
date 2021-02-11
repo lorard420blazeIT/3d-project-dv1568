@@ -30,10 +30,10 @@ private:
 	
 	float moveLeftRight = 0.0f;
 	float moveBackFoward = 0.0f;
-	float yaw = 0.0f;
-	float pitch = 0.0;
-	float roll = 0.0f;
-
+	//float yaw = 0.0f;
+	//float pitch = 0.0;
+	//float roll = 0.0f;
+	sm::Vector3 rollPitchYaw = { 0.0f,0.0f,0.0f};
 	float speed = 1.f;
 	float width, height;
 
@@ -51,4 +51,7 @@ public:
 	dx::XMFLOAT4X4 getView();
 	dx::XMFLOAT4X4 getPP();
 	dx::XMFLOAT3 getPos();
+	sm::Vector3 getRollPitchYaw()const { return this->rollPitchYaw; }
+	void setRollPitchYaw(sm::Vector3 newRollPichyawValue);
+	void subRollPitchYaw(sm::Vector3 rollpitchYaw);
 };

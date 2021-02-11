@@ -145,7 +145,25 @@ void Engine::moveCamera()
 		cam.SetStartPos();
 		std::cout << "pressed home" << std::endl;
 	}
+	cam.subRollPitchYaw(input.getdelta());
+	float limit = dx::XM_PI / 2.0f - 0.01f;
+	cam.setRollPitchYaw(sm::Vector3{ 0,std::max(-limit,cam.getRollPitchYaw().y),0 });
+	cam.setRollPitchYaw(sm::Vector3{ 0,std::min(limit,cam.getRollPitchYaw().y),0 });
+	
 
+	if (cam.getRollPitchYaw().z > dx::XM_PI) 
+	{
+		cam.subRollPitchYaw(sm::Vector3(0,(dx::XM_PI * 2.0f),0));
+	
+	
+	}
+	else if (cam.getRollPitchYaw().z < dx::XM_PI)
+	{
+		cam.subRollPitchYaw(sm::Vector3(0, -(dx::XM_PI * 2.0f), 0));
+
+
+	}
+	
 
 	//sm::Quaternion q = dx::XMQuaternionRotationRollPitchYaw(roll, pitch, yaw);
 

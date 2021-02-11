@@ -22,12 +22,12 @@ void Camera::Update()
 	//std::cout << "CamRight:  " << dx::XMVectorGetX(camRight) << dx::XMVectorGetY(camRight) << dx::XMVectorGetZ(camRight) << std::endl;
 	//std::cout << "CamFoward: " << dx::XMVectorGetX(camForward) << dx::XMVectorGetY(camForward) << dx::XMVectorGetZ(camForward) << std::endl;
 
-	camRotationMatrix = dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+	camRotationMatrix = dx::XMMatrixRotationRollPitchYaw(rollPitchYaw.z, rollPitchYaw.y, rollPitchYaw.x);
 	target = dx::XMVector3TransformCoord(DefaultForward, camRotationMatrix);
 	target = dx::XMVector3Normalize(target);
 
 	dx::XMMATRIX rotateYTTempMAtrix;
-	rotateYTTempMAtrix = dx::XMMatrixRotationY(yaw);
+	rotateYTTempMAtrix = dx::XMMatrixRotationY(rollPitchYaw.z);
 
 	camRight = dx::XMVector3TransformCoord(DefaultRight, rotateYTTempMAtrix);
 	camForward = dx::XMVector3TransformCoord(DefaultForward, rotateYTTempMAtrix);
@@ -114,3 +114,15 @@ dx::XMFLOAT3 Camera::getPos()
 	dx::XMStoreFloat3(&saveMe, pos);
 	return saveMe;
 }
+
+void Camera::setRollPitchYaw(sm::Vector3 newRollPichyawValue)
+{
+	
+	this->rollPitchYaw = newRollPichyawValue;
+}
+
+void Camera::subRollPitchYaw(sm::Vector3 rollpitchYaw)
+{
+	this->rollPitchYaw -= rollPitchYaw;
+}
+

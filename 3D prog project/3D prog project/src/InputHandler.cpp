@@ -13,6 +13,14 @@ void InputHandler::Update()
 {
 	auto state = keyboard->GetState();
 	keyTracker.Update(state);
+
+	float rotationMouse = 0.004f;
+	auto mouseState = mouse->GetState();
+	if(mouseState.positionMode== dx::Mouse::MODE_RELATIVE)
+	{
+		delta = sm::Vector3(float(mouseState.x), float(mouseState.y), 0.f) * rotationMouse;
+	}
+	mouse->SetMode(mouseState.leftButton ? dx::Mouse::MODE_RELATIVE : dx::Mouse::MODE_ABSOLUTE);
 }
 
 bool InputHandler::KeyPressed(dx::Keyboard::Keys key)
@@ -41,6 +49,15 @@ void InputHandler::test()
 	}*/
 }
 
+sm::Vector3 InputHandler::getdelta()
+{
+	return delta;
+}
+
+
+
+
+
 void InputHandler::SetUp(Window* window)
 {
 	this->height = window->getHeight();
@@ -49,4 +66,6 @@ void InputHandler::SetUp(Window* window)
 	keyboard = std::make_unique<dx::Keyboard>();
 	mouse = std::make_unique<dx::Mouse>();
 	mouse->SetWindow(window->getHWND());
+	
 }
+

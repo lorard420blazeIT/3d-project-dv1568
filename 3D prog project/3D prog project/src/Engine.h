@@ -1,3 +1,4 @@
+#define NOMINMAX
 #include <Windows.h>
 #include <iostream>
 #include <d3d11.h>
@@ -9,6 +10,8 @@
 #include "Camera.h"
 #include "InputHandler.h"
 #include "SimpleMath.h"
+#include <algorithm>
+
 
 namespace dx = DirectX;
 namespace sm = DirectX::SimpleMath;
