@@ -10,6 +10,7 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 
 	case WM_ACTIVATEAPP:
 		dx::Keyboard::ProcessMessage(message, wParam, lParam);
+		dx::Mouse::ProcessMessage(message, wParam, lParam);
 		break;
 
 	case WM_KEYDOWN:
@@ -17,6 +18,21 @@ LRESULT CALLBACK WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	case WM_KEYUP:
 	case WM_SYSKEYUP:
 		dx::Keyboard::ProcessMessage(message, wParam, lParam);
+		break;
+
+	case WM_INPUT :
+	case WM_MOUSEMOVE:
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_MOUSEWHEEL:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+	case WM_MOUSEHOVER:
+		dx::Mouse::ProcessMessage(message, wParam, lParam);
 		break;
 
 	default: //Annars ba break

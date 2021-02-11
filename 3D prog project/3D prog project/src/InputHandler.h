@@ -29,7 +29,6 @@ public:
     void SetUp(Window* window);
     void Update();
     bool KeyPressed(dx::Keyboard::Keys key);
-    void test();
     sm::Vector3 getdelta();
    
 

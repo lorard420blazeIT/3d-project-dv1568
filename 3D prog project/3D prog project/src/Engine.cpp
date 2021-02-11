@@ -17,7 +17,6 @@ Engine::Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine
 	lightFrame.specPower = 128.0f;
 
 	textureFilePath = "../Texture/this-is-fine-Charlie.png";
-
 }
 
 bool Engine::SetUp()
@@ -69,12 +68,8 @@ void Engine::Update()
 		deltaTime = std::chrono::duration_cast<ms>(timeStop - timeStart).count() / 1000;
 
 		currentRotation = deltaTime * speed;
-		//input.Update();
-		if (input.KeyPressed(KEY(F)))
-		{
-			std::cout << "pressed F" << std::endl;
-		}
-		input.test();
+
+		input.Update();
 		cam.Update();
 		moveCamera();
 
@@ -115,58 +110,58 @@ void Engine::Run()
 
 void Engine::moveCamera()
 {
-	float speed = 0.1;
+	float speed = 0.01;
 	if (input.KeyPressed(KEY(W)))
 	{
 		cam.movefoward(speed);
-		std::cout << "pressed W" << std::endl;
+		//std::cout << "pressed W" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(A)))
 	{
 		cam.moveLeft(speed);
-		std::cout << "pressed A" << std::endl;
+		//std::cout << "pressed A" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(S)))
 	{
 		cam.moveback(speed);
-		std::cout << "pressed S" << std::endl;
+		//std::cout << "pressed S" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(D)))
 	{
 		cam.moveRight(speed);
-		std::cout << "pressed D" << std::endl;
+		//std::cout << "pressed D" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(V)))
 	{
 		cam.SetStartPos();
-		std::cout << "pressed home" << std::endl;
+		//std::cout << "pressed home" << std::endl;
 	}
-	cam.subRollPitchYaw(input.getdelta());
+
+	//sm::Quaternion q = dx::XMQuaternionRotationRollPitchYaw(cam.getRollPitchYaw().z, cam.getRollPitchYaw().y, 0.f);
+
+	//std::cout << "Before: " << cam.getRollPitchYaw().x << cam.getRollPitchYaw().y << cam.getRollPitchYaw().z << std::endl;
+	//cam.subRollPitchYaw(input.getdelta());
+	cam.subRollPitchYaw(sm::Vector3(-1, -1, -1));
+
+	//std::cout << input.getdelta().x << input.getdelta().y << input.getdelta().z  << std::endl;
+
+	std::cout << "Aftrer: "<<cam.getRollPitchYaw().x << cam.getRollPitchYaw().y << cam.getRollPitchYaw().z << std::endl;
+
 	float limit = dx::XM_PI / 2.0f - 0.01f;
 	cam.setRollPitchYaw(sm::Vector3{ 0,std::max(-limit,cam.getRollPitchYaw().y),0 });
 	cam.setRollPitchYaw(sm::Vector3{ 0,std::min(limit,cam.getRollPitchYaw().y),0 });
-	
 
 	if (cam.getRollPitchYaw().z > dx::XM_PI) 
 	{
 		cam.subRollPitchYaw(sm::Vector3(0,(dx::XM_PI * 2.0f),0));
-	
-	
 	}
 	else if (cam.getRollPitchYaw().z < dx::XM_PI)
 	{
 		cam.subRollPitchYaw(sm::Vector3(0, -(dx::XM_PI * 2.0f), 0));
-
-
 	}
-	
-
-	//sm::Quaternion q = dx::XMQuaternionRotationRollPitchYaw(roll, pitch, yaw);
-
-
 }
 

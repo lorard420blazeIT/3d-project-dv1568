@@ -26,11 +26,8 @@ void Camera::Update()
 	target = dx::XMVector3TransformCoord(DefaultForward, camRotationMatrix);
 	target = dx::XMVector3Normalize(target);
 
-	dx::XMMATRIX rotateYTTempMAtrix;
-	rotateYTTempMAtrix = dx::XMMatrixRotationY(rollPitchYaw.z);
-
-	camRight = dx::XMVector3TransformCoord(DefaultRight, rotateYTTempMAtrix);
-	camForward = dx::XMVector3TransformCoord(DefaultForward, rotateYTTempMAtrix);
+	camRight = dx::XMVector3TransformCoord(DefaultRight, camRotationMatrix);
+	camForward = dx::XMVector3TransformCoord(DefaultForward, camRotationMatrix);
 	up = dx::XMVector3Cross(camForward, camRight);
 	
 	sm::Vector3 camRightTemp(dx::XMVectorGetX(camRight), dx::XMVectorGetY(camRight), dx::XMVectorGetZ(camRight));
@@ -116,8 +113,7 @@ dx::XMFLOAT3 Camera::getPos()
 }
 
 void Camera::setRollPitchYaw(sm::Vector3 newRollPichyawValue)
-{
-	
+{	
 	this->rollPitchYaw = newRollPichyawValue;
 }
 
