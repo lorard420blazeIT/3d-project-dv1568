@@ -19,7 +19,46 @@ Camera::~Camera()
 
 void Camera::Update()
 {
+	//std::cout << "CamRight:  " << dx::XMVectorGetX(camRight) << dx::XMVectorGetY(camRight) << dx::XMVectorGetZ(camRight) << std::endl;
+	//std::cout << "CamFoward: " << dx::XMVectorGetX(camForward) << dx::XMVectorGetY(camForward) << dx::XMVectorGetZ(camForward) << std::endl;
 
+	camRotationMatrix = dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+	target = dx::XMVector3TransformCoord(DefaultForward, camRotationMatrix);
+	target = dx::XMVector3Normalize(target);
+
+	dx::XMMATRIX rotateYTTempMAtrix;
+	rotateYTTempMAtrix = dx::XMMatrixRotationY(yaw);
+
+	camRight = dx::XMVector3TransformCoord(DefaultRight, rotateYTTempMAtrix);
+	camForward = dx::XMVector3TransformCoord(DefaultForward, rotateYTTempMAtrix);
+	up = dx::XMVector3Cross(camForward, camRight);
+	
+	sm::Vector3 camRightTemp(dx::XMVectorGetX(camRight), dx::XMVectorGetY(camRight), dx::XMVectorGetZ(camRight));
+	sm::Vector3 camForwardTemp(dx::XMVectorGetX(camForward), dx::XMVectorGetY(camForward), dx::XMVectorGetZ(camForward));
+
+	//std::cout << "Camright temp: " << camRightTemp.x << camRightTemp.y << camRightTemp.z << std::endl;
+	//std::cout << "Camfoward temp: " << camForwardTemp.x << camForwardTemp.y << camForwardTemp.z << std::endl;
+
+	camRightTemp = camRightTemp *moveLeftRight;
+	camForwardTemp = camForwardTemp* moveBackFoward;
+
+	//std::cout << "Camright temp: " << camRightTemp.x << camRightTemp.y << camRightTemp.z << std::endl;
+	//std::cout << "Camfoward temp: " << camForwardTemp.x << camForwardTemp.y << camForwardTemp.z << std::endl;
+
+	camRight = dx::XMVectorSet(camRightTemp.x, camRightTemp.y, camRightTemp.z, 1);
+	camForward = dx::XMVectorSet(camForwardTemp.x, camForwardTemp.y, camForwardTemp.z, 1);
+
+	pos = dx::XMVectorAdd(pos, camRight);
+	pos = dx::XMVectorAdd(pos, camForward);
+	
+	moveLeftRight = 0;
+	moveBackFoward = 0;
+
+	target = dx::XMVectorAdd(pos, target);
+	view = dx::XMMatrixLookAtLH(pos, target, up);
+
+	//std::cout << "CamRight:  " << dx::XMVectorGetX(camRight) << dx::XMVectorGetY(camRight) << dx::XMVectorGetZ(camRight) << std::endl;
+	//std::cout << "CamFoward: " << dx::XMVectorGetX(camForward) << dx::XMVectorGetY(camForward) << dx::XMVectorGetZ(camForward) << std::endl;
 }
 
 void Camera::SetPos(float x, float y, float z)
@@ -28,9 +67,31 @@ void Camera::SetPos(float x, float y, float z)
 	view = dx::XMMatrixLookAtLH(pos, target, up);
 }
 
-void Camera::move(float x, float y, float z)
+void Camera::SetStartPos()
 {
-	pos = dx::XMVectorSet(this->x + x, this->y + y , this->z + z, 0);
+	pos = startPos;
+	moveBackFoward = 0;
+	moveLeftRight = 0;
+}
+
+void Camera::moveLeft(float speed)
+{
+	moveLeftRight -= speed;
+}
+
+void Camera::moveRight(float speed)
+{
+	moveLeftRight += speed;
+}
+
+void Camera::movefoward(float speed)
+{
+	moveBackFoward += speed;
+}
+
+void Camera::moveback(float speed)
+{
+	moveBackFoward -= speed;
 }
 
 dx::XMFLOAT4X4 Camera::getView()

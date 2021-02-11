@@ -2,7 +2,7 @@
 
 
 Engine::Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine, int& nCmdShow)
-	:nCmdShow(nCmdShow), instance(hinstance) , input(WIDTH, HEIGHT), cam(WIDTH, HEIGHT)
+	:nCmdShow(nCmdShow), instance(hinstance) , input(winHWND, WIDTH, HEIGHT), cam(WIDTH, HEIGHT)
 {
 	//stuff in update
 	msg = {};
@@ -72,6 +72,7 @@ void Engine::Update()
 			std::cout << "pressed F" << std::endl;
 		}
 		input.test();
+		cam.Update();
 		moveCamera();
 
 		render.render(immediateConxtex, rtv, dsView, viewport, vShader, pShader, inputLayout, vertexBuffer, textureSRV, sampler);
@@ -111,62 +112,40 @@ void Engine::Run()
 
 void Engine::moveCamera()
 {
-
+	float speed = 0.1;
 	if (input.KeyPressed(KEY(W)))
 	{
-		cam.move(0, 0, 5);
+		cam.movefoward(speed);
 		std::cout << "pressed W" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(A)))
 	{
+		cam.moveLeft(speed);
 		std::cout << "pressed A" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(S)))
 	{
+		cam.moveback(speed);
 		std::cout << "pressed S" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(D)))
 	{
+		cam.moveRight(speed);
 		std::cout << "pressed D" << std::endl;
 	}
 
-	if (input.KeyPressed(KEY(Home)))
+	if (input.KeyPressed(KEY(V)))
 	{
+		cam.SetStartPos();
 		std::cout << "pressed home" << std::endl;
 	}
 
 
-
-	//dx::XMFLOAT3 move = { 0,0,0 };
-
-	//if (kb.Up || kb.W)
-	//{
-	//	move.y += speed;
-	//	std::cout << "up" << std::endl;
-	//}
-
-	//if (kb.Down || kb.S)
-	//{
-	//	move.y -= speed;
-	//}
-
-	//if (kb.Left || kb.A)
-	//{
-	//	move.x += speed;
-	//}
-
-	//if (kb.Right || kb.D)
-	//{
-	//	move.x -= speed;
-	//}
-	//
 	//sm::Quaternion q = dx::XMQuaternionRotationRollPitchYaw(roll, pitch, yaw);
-	//
-	//pos = dx::XMVectorSet(move.x, move.y, move.z, 0);
 
-	//view = dx::XMMatrixLookAtLH(pos, target, up);
+
 }
 

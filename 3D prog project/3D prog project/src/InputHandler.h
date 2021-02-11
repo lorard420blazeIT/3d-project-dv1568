@@ -12,14 +12,16 @@ namespace dx = DirectX;
 class InputHandler
 {
 private:
+    HWND win;
     int width;
     int height;
     std::unique_ptr<dx::Keyboard> keyboard;
     dx::Keyboard::KeyboardStateTracker keyTracker;
+    std::unique_ptr<dx::Mouse> mouse;
 
 public:
     InputHandler();
-    InputHandler(int width, int height);
+    InputHandler(HWND &win, int width, int height);
     ~InputHandler();
     void Update();
     bool KeyPressed(dx::Keyboard::Keys key);

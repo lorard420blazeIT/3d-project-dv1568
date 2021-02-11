@@ -2,14 +2,15 @@
 
 InputHandler::InputHandler()
 {
-	width = 10;
-	height = 10;
+
 }
 
-InputHandler::InputHandler(int width, int height)
-	:width(width), height(height)
+InputHandler::InputHandler(HWND &win, int width, int height)
+	:win(win), width(width), height(height)
 {
 	keyboard = std::make_unique<dx::Keyboard>();
+	mouse = std::make_unique<dx::Mouse>();
+	//mouse->SetWindow(win);
 }
 
 InputHandler::~InputHandler()

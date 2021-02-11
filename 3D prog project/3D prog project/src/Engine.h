@@ -19,6 +19,13 @@ private:
 	const UINT WIDTH = 700;
 	const UINT HEIGHT = 500;
 
+	//Window stuff
+	Window windowMain;
+	HWND winHWND;
+	HINSTANCE instance;
+	int nCmdShow;
+	std::string textureFilePath;
+
 	cbFrameObj frame;
 	cbFrameLight lightFrame;
 	InputHandler input;
@@ -31,15 +38,6 @@ private:
 	float currentRotation;
 	float speed;
 	Render render;
-
-	//Window stuff
-	Window windowMain;
-	
-	HWND winHWND;
-	HINSTANCE instance;
-	int nCmdShow;
-
-	std::string textureFilePath;
 
 public:
 	ID3D11Device* device;
