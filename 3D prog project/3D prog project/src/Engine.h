@@ -21,7 +21,6 @@ private:
 
 	//Window stuff
 	Window windowMain;
-	HWND winHWND;
 	HINSTANCE instance;
 	int nCmdShow;
 	std::string textureFilePath;

@@ -4,6 +4,7 @@
 #include <string>
 #include "Keyboard.h"
 #include "Mouse.h"
+#include "Window.h"
 //#include <winrt\Windows.UI.Core.h>
 
 namespace dx = DirectX;
@@ -21,8 +22,8 @@ private:
 
 public:
     InputHandler();
-    InputHandler(HWND &win, int width, int height);
     ~InputHandler();
+    void SetUp(Window* window);
     void Update();
     bool KeyPressed(dx::Keyboard::Keys key);
     void test();

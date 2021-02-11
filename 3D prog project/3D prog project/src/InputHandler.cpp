@@ -5,14 +5,6 @@ InputHandler::InputHandler()
 
 }
 
-InputHandler::InputHandler(HWND &win, int width, int height)
-	:win(win), width(width), height(height)
-{
-	keyboard = std::make_unique<dx::Keyboard>();
-	mouse = std::make_unique<dx::Mouse>();
-	//mouse->SetWindow(win);
-}
-
 InputHandler::~InputHandler()
 {
 }
@@ -47,4 +39,14 @@ void InputHandler::test()
 	{
 		std::cout << "TEST input" << std::endl;
 	}*/
+}
+
+void InputHandler::SetUp(Window* window)
+{
+	this->height = window->getHeight();
+	this->width = window->getWidth();
+
+	keyboard = std::make_unique<dx::Keyboard>();
+	mouse = std::make_unique<dx::Mouse>();
+	mouse->SetWindow(window->getHWND());
 }

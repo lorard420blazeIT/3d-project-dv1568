@@ -22,9 +22,10 @@ private:
 
 public:
 	Window();
-	bool setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win);
+	bool setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow);
 	bool setUpConsole();
-	void moveWindow(HWND window, UINT xPos, UINT yPos);
+	void moveWindow(UINT xPos, UINT yPos);
 	float getHeight();
 	float getWidth();
+	HWND getHWND() const { return this->win; }
 };

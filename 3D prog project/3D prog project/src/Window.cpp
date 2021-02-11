@@ -31,7 +31,7 @@ Window::Window()
 }
 
 
-bool Window::setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow, HWND& win)
+bool Window::setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow)
 {
 	this->height = height;
 	this->width = width;
@@ -48,16 +48,16 @@ bool Window::setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdSh
 
 	//Skapar fönsret,
 	//(optional styling = default, klassnamn, namn, style, default pos, ignorerar y, bredd, höjd, igen parentWindow, ingen meny, hanterar instance, ingen extra data)
-	win = CreateWindowEx(0, CLASS_NAME, L"Demo Window", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, width, height, nullptr, nullptr, instance, nullptr);
+	this->win = CreateWindowEx(0, CLASS_NAME, L"Demo Window", WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, width, height, nullptr, nullptr, instance, nullptr);
 
-	if (win == nullptr) //Kollar ifall de gick och ger felmedelande ifall de inte gick
+	if (this->win == nullptr) //Kollar ifall de gick och ger felmedelande ifall de inte gick
 	{
 		std::cerr << "HWND was nullptr, last error: " << GetLastError() << std::endl;
 		return false;
 	}
 
-	SetWindowPos(win, nullptr, 20, 100, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-	ShowWindow(win, nCmdShow);
+	SetWindowPos(this->win, nullptr, 20, 100, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	ShowWindow(this->win, nCmdShow);
 
 	return true;
 }
@@ -78,10 +78,10 @@ bool Window::setUpConsole()
 	return true;
 }
 
-void Window::moveWindow(HWND window, UINT xPos, UINT yPos)
+void Window::moveWindow(UINT xPos, UINT yPos)
 {
 	//Tar ej in negativa värden
-	SetWindowPos(window, nullptr, xPos, yPos, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+	SetWindowPos(this->win, nullptr, xPos, yPos, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
 
 float Window::getHeight()

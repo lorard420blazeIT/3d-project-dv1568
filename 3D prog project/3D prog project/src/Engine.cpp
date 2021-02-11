@@ -2,7 +2,7 @@
 
 
 Engine::Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine, int& nCmdShow)
-	:nCmdShow(nCmdShow), instance(hinstance) , input(winHWND, WIDTH, HEIGHT), cam(WIDTH, HEIGHT)
+	:nCmdShow(nCmdShow), instance(hinstance), cam(WIDTH, HEIGHT)
 {
 	//stuff in update
 	msg = {};
@@ -23,7 +23,7 @@ Engine::Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine
 bool Engine::SetUp()
 {
 	//Setup stuff
-	if (!windowMain.setUpWindow(instance, WIDTH, HEIGHT, nCmdShow, winHWND))
+	if (!windowMain.setUpWindow(instance, WIDTH, HEIGHT, nCmdShow))
 	{
 		std::cerr << "Failed to setup Window" << std::endl;
 		return false;
@@ -33,7 +33,7 @@ bool Engine::SetUp()
 		std::cerr << "Failed to setup console" << std::endl;
 		return false;
 	}
-	if (!SetupD3D11(HEIGHT, WIDTH, winHWND, device, immediateConxtex, swapChain, rtv, dsTexture, dsView, viewport))
+	if (!SetupD3D11(HEIGHT, WIDTH, windowMain.getHWND(), device, immediateConxtex, swapChain, rtv, dsTexture, dsView, viewport))
 	{
 		std::cerr << "Failed to create D3D11!" << std::endl;
 		return false;
@@ -43,6 +43,9 @@ bool Engine::SetUp()
 		std::cerr << "Failed to setup pipeline!" << std::endl;
 		return false;
 	}
+
+	input.SetUp(&windowMain);
+
 	return true;
 }
 
