@@ -28,6 +28,7 @@ public:
     ~InputHandler();
     void SetUp(Window* window);
     void Update();
+    bool UpdateMouse();
     bool KeyPressed(dx::Keyboard::Keys key);
     sm::Vector3 getdelta();
    

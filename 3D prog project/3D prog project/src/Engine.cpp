@@ -110,58 +110,51 @@ void Engine::Run()
 
 void Engine::moveCamera()
 {
-	float speed = 0.01;
+	float speed = 0.003;
 	if (input.KeyPressed(KEY(W)))
 	{
 		cam.movefoward(speed);
-		//std::cout << "pressed W" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(A)))
 	{
 		cam.moveLeft(speed);
-		//std::cout << "pressed A" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(S)))
 	{
 		cam.moveback(speed);
-		//std::cout << "pressed S" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(D)))
 	{
 		cam.moveRight(speed);
-		//std::cout << "pressed D" << std::endl;
 	}
 
 	if (input.KeyPressed(KEY(V)))
 	{
 		cam.SetStartPos();
-		//std::cout << "pressed home" << std::endl;
 	}
-
-	//sm::Quaternion q = dx::XMQuaternionRotationRollPitchYaw(cam.getRollPitchYaw().z, cam.getRollPitchYaw().y, 0.f);
-
-	//std::cout << "Before: " << cam.getRollPitchYaw().x << cam.getRollPitchYaw().y << cam.getRollPitchYaw().z << std::endl;
-	//cam.subRollPitchYaw(input.getdelta());
-	cam.subRollPitchYaw(sm::Vector3(-1, -1, -1));
-
-	//std::cout << input.getdelta().x << input.getdelta().y << input.getdelta().z  << std::endl;
-
-	std::cout << "Aftrer: "<<cam.getRollPitchYaw().x << cam.getRollPitchYaw().y << cam.getRollPitchYaw().z << std::endl;
-
-	float limit = dx::XM_PI / 2.0f - 0.01f;
-	cam.setRollPitchYaw(sm::Vector3{ 0,std::max(-limit,cam.getRollPitchYaw().y),0 });
-	cam.setRollPitchYaw(sm::Vector3{ 0,std::min(limit,cam.getRollPitchYaw().y),0 });
-
-	if (cam.getRollPitchYaw().z > dx::XM_PI) 
+	
+	if (input.UpdateMouse())
 	{
-		cam.subRollPitchYaw(sm::Vector3(0,(dx::XM_PI * 2.0f),0));
-	}
-	else if (cam.getRollPitchYaw().z < dx::XM_PI)
-	{
-		cam.subRollPitchYaw(sm::Vector3(0, -(dx::XM_PI * 2.0f), 0));
+		std::cout << "go in the if sats " << std::endl;
+
+		cam.subYawPitchRoll(-input.getdelta());
+
+		//Limits to only look 180 degres down and up
+		float limit = dx::XM_PI / 2.0f - 0.01f;
+		cam.setYawPitchRoll(sm::Vector3{ cam.getYawPitchRoll().x ,std::max(-limit, cam.getYawPitchRoll().y) ,cam.getYawPitchRoll().z });
+		cam.setYawPitchRoll(sm::Vector3{ cam.getYawPitchRoll().x ,std::min(limit, cam.getYawPitchRoll().y), cam.getYawPitchRoll().z });
+
+		if (cam.getYawPitchRoll().x > dx::XM_PI)
+		{
+			cam.subYawPitchRoll(sm::Vector3((dx::XM_PI * 2.0f), 0,0));
+		}
+		else if (cam.getYawPitchRoll().x < dx::XM_PI)
+		{
+			cam.subYawPitchRoll(sm::Vector3(-(dx::XM_PI * 2.0f), 0,0));
+		}
 	}
 }
 
