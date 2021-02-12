@@ -19,13 +19,12 @@ private:
 	int nCmdShow;
 	HWND win;
 
-
 public:
 	Window();
 	bool setUpWindow(HINSTANCE instance, UINT width, UINT height, int nCmdShow);
 	bool setUpConsole();
 	void moveWindow(UINT xPos, UINT yPos);
-	float getHeight();
-	float getWidth();
+	float getHeight() const { return this->height; }
+	float getWidth() const { return this->width; }
 	HWND getHWND() const { return this->win; }
 };

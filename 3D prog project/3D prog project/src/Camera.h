@@ -3,13 +3,10 @@
 #include <d3d11.h>
 #include <string>
 #include <iostream>
-
-//#include "InputHandler.h"
 #include "SimpleMath.h"
 
 namespace dx = DirectX; 
 namespace sm = DirectX::SimpleMath;
-
 
 class Camera
 {
@@ -20,13 +17,12 @@ private:
 	dx::XMVECTOR up = dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	dx::XMMATRIX view = dx::XMMatrixIdentity();
 	dx::XMMATRIX pp = dx::XMMatrixPerspectiveFovLH(0.4f * 3.14f, (float)1000 / 800, 1.0f, 1000.0f);
-	
+	dx::XMMATRIX camRotationMatrix;
+
 	dx::XMVECTOR DefaultForward = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	dx::XMVECTOR DefaultRight = dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
 	dx::XMVECTOR camForward = dx::XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 	dx::XMVECTOR camRight = dx::XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f);
-
-	dx::XMMATRIX camRotationMatrix;
 	sm::Vector3 yawPitchRoll = { 0.0f,0.0f,0.0f };
 
 	float moveLeftRight = 0.0f;

@@ -53,6 +53,7 @@ public:
 	ID3D11PixelShader* pShader;
 	ID3D11InputLayout* inputLayout;
 	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* indexBuffer;
 	ID3D11Texture2D* texture;
 	ID3D11ShaderResourceView* textureSRV;
 	ID3D11SamplerState* sampler;

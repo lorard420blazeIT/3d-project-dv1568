@@ -99,13 +99,3 @@ void Window::moveWindow(UINT xPos, UINT yPos)
 	//Tar ej in negativa värden
 	SetWindowPos(this->win, nullptr, xPos, yPos, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 }
-
-float Window::getHeight()
-{
-	return height;
-}
-
-float Window::getWidth()
-{
-	return width;
-}

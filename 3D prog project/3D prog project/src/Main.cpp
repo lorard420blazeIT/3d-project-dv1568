@@ -5,7 +5,6 @@
 #include "d3d11Helper.h"
 #include <chrono>
 #include "PipelineHelper.h"
-#include "windowHelper.h"
 #include "Render.h"
 #include "Engine.h"
 #include <Keyboard.h>

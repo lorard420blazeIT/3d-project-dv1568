@@ -37,7 +37,7 @@ bool Engine::SetUp()
 		std::cerr << "Failed to create D3D11!" << std::endl;
 		return false;
 	}
-	if (!SetupPipeline(device, vertexBuffer, vShader, pShader, inputLayout, texture, textureSRV, sampler, textureFilePath, constantBufferObj, constantBufferLight))
+	if (!SetupPipeline(device, vertexBuffer, vShader, pShader, inputLayout, texture, textureSRV, sampler, textureFilePath, constantBufferObj, constantBufferLight, indexBuffer, immediateConxtex))
 	{
 		std::cerr << "Failed to setup pipeline!" << std::endl;
 		return false;
@@ -47,7 +47,6 @@ bool Engine::SetUp()
 
 	return true;
 }
-
 
 void Engine::Update()
 {
@@ -87,6 +86,7 @@ void Engine::ReleaseAll()
 	textureSRV->Release();
 	sampler->Release();
 	vertexBuffer->Release();
+	indexBuffer->Release();
 	inputLayout->Release();
 	vShader->Release();
 	pShader->Release();

@@ -6,12 +6,10 @@
 #include "Mouse.h"
 #include "Window.h"
 #include "SimpleMath.h"
-//#include <winrt\Windows.UI.Core.h>
 
 namespace dx = DirectX;
 namespace sm = dx::SimpleMath;
 #define KEY(X) dx::Keyboard::X
-
 
 class InputHandler
 {
@@ -23,6 +21,7 @@ private:
     dx::Keyboard::KeyboardStateTracker keyTracker;
     std::unique_ptr<dx::Mouse> mouse;
     sm::Vector3 delta;
+
 public:
     InputHandler();
     ~InputHandler();
@@ -30,13 +29,5 @@ public:
     void Update();
     bool UpdateMouse();
     bool KeyPressed(dx::Keyboard::Keys key);
-    sm::Vector3 getdelta();
-   
-
+    sm::Vector3 getdelta() const { return this->delta; }
 };
-
-/* void test() {
-        if (InputHandler::Instance().GetKey(DirectX::Keyboard::E)) {
-            std::cout << "TEST";
-        }
-    }*/

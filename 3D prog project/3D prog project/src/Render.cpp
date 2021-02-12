@@ -23,5 +23,5 @@ void Render::render(ID3D11DeviceContext* immediateConxtex, ID3D11RenderTargetVie
 	immediateConxtex->PSSetSamplers(0, 1, &sampler);
 	immediateConxtex->OMSetRenderTargets(1, &rtv, dsView);
 
-	immediateConxtex->Draw(6, 0);
+	immediateConxtex->DrawIndexed(12, 0, 0);
 }

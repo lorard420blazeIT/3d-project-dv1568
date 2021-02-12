@@ -122,6 +122,33 @@ bool CreateVertexBuffer(ID3D11Device* device, ID3D11Buffer*& vertexBuffer)
 	return !FAILED(hr);
 }
 
+bool CreateIndexBuffer(ID3D11Device* device, ID3D11Buffer*& indexBuffer, ID3D11DeviceContext* immediateConxtex)
+{
+	DWORD indicies[] =
+	{
+		0, 1, 2,
+		1, 2, 3,
+		2, 3, 4,
+		3, 4, 5
+	};
+
+	D3D11_BUFFER_DESC bufferDesc;
+	ZeroMemory(&indexBuffer, sizeof(indexBuffer));
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(DWORD) * 4 * 3;
+	bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA iinitData;
+	iinitData.pSysMem = indicies;
+
+	HRESULT hr = device->CreateBuffer(&bufferDesc, &iinitData, &indexBuffer);
+	immediateConxtex->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	return !FAILED(hr);
+}
+
 bool CreateCbPerObj(ID3D11Device* device, ID3D11Buffer*& constantBuffer) //Use 1 or 0 instället fö bools. Allt måste alltid va float4 i storlek
 {
 	D3D11_BUFFER_DESC bufferDesc = { 0 };
@@ -279,7 +306,7 @@ bool CreateSamplerState(ID3D11Device* device, ID3D11SamplerState*& sampler)
 }
 
 bool SetupPipeline(ID3D11Device* device, ID3D11Buffer*& vertexBuffer, ID3D11VertexShader*& vShader, ID3D11PixelShader*& pShader, ID3D11InputLayout*& inputLayer, ID3D11Texture2D*& texture,
-				   ID3D11ShaderResourceView*& texturSRV, ID3D11SamplerState*& sampler, std::string filePath, ID3D11Buffer*& constantBufferObj, ID3D11Buffer*& constantBufferLight)
+	ID3D11ShaderResourceView*& texturSRV, ID3D11SamplerState*& sampler, std::string filePath, ID3D11Buffer*& constantBufferObj, ID3D11Buffer*& constantBufferLight, ID3D11Buffer*& indexBuffer, ID3D11DeviceContext*& immidateContext)
 {
 	std::string vShaderByteCode;
 	if (!LoadShaders(device, vShader, pShader, vShaderByteCode))
@@ -298,6 +325,11 @@ bool SetupPipeline(ID3D11Device* device, ID3D11Buffer*& vertexBuffer, ID3D11Vert
 	{
 		std::cerr << "Error creating vertex buffer!" << std::endl;
 		return false;
+	}
+
+	if (!CreateIndexBuffer(device, indexBuffer, immidateContext))
+	{
+
 	}
 
 	if (!CreateCbPerObj(device, constantBufferObj))
