@@ -14,5 +14,6 @@ private:
 
 public:
 	void position();
+	void Gbuffer(ID3D11DepthStencilView dsvGbuffer);
 	/*ID3D11Buffer gBuffer(ID3D11RenderTargetView gbufferRtv, ID3D11Texture2D texture2d, ID3D11ShaderResourceView shadersgbuffer);*/
 };
