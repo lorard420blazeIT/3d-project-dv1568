@@ -51,23 +51,22 @@ public:
 	ID3D11Texture2D* dsTexture;
 	ID3D11DepthStencilView* dsView;
 	D3D11_VIEWPORT viewport;
-	ID3D11VertexShader* vShader;
-	ID3D11PixelShader* pShader;
-	ID3D11InputLayout* inputLayout;
-	ID3D11Buffer* vertexBuffer;
-	ID3D11Buffer* indexBuffer;
-	ID3D11Texture2D* texture;
-	ID3D11ShaderResourceView* textureSRV;
-	ID3D11SamplerState* sampler;
-	ID3D11Buffer* constantBufferObj;
-	ID3D11Buffer* constantBufferLight;
+	//ID3D11VertexShader* vShader;
+	//ID3D11PixelShader* pShader;
+	//ID3D11InputLayout* inputLayout;
+	//ID3D11Buffer* vertexBuffer;
+	//ID3D11Buffer* indexBuffer;
+	//ID3D11Texture2D* texture;
+	//ID3D11ShaderResourceView* textureSRV;
+	//ID3D11SamplerState* sampler;
+	//ID3D11Buffer* constantBufferObj;
+	//ID3D11Buffer* constantBufferLight;
 
 	Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine, int& nCmdShow);
 	bool SetUp();
 	void Update();
 	void ReleaseAll();
 	void Run();
-
 	void moveCamera();
 
 };

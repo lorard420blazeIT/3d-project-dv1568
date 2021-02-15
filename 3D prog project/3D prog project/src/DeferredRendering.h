@@ -34,12 +34,12 @@ private:
 	ID3D11Buffer* constantBufferLight;
 
 
-	Camera cam;
+	//Camera cam;
 
 public:
 	DeferredRendering();
 	~DeferredRendering();
-	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView *&rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Camera &cam, std::string filePath);
+	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView *&rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, std::string filePath);
 	bool LoadShaders();
 	bool CreateInputLayout();
 	bool CreateVertexBuffer();
@@ -51,6 +51,7 @@ public:
 	bool SetupPipeline();
 	void position();
 	void Render();
-	void Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight* lightBuffer);
+	void Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight* lightBuffer, Camera& cam);
+	void Release();
 	/*ID3D11Buffer gBuffer(ID3D11RenderTargetView gbufferRtv, ID3D11Texture2D texture2d, ID3D11ShaderResourceView shadersgbuffer);*/
 };

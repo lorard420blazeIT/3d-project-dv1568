@@ -38,7 +38,7 @@ bool Engine::SetUp()
 		return false;
 	}
 
-	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, cam, textureFilePath);
+	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, textureFilePath);
 
 	if (!defRender.SetupPipeline())
 	{
@@ -76,28 +76,27 @@ void Engine::Update()
 		moveCamera();
 		defRender.Render();
 		swapChain->Present(0, 0);
-		defRender.Update(&frame, currentRotation, &lightFrame);
+		defRender.Update(&frame, currentRotation, &lightFrame, cam);
 	}
 }
 
 void Engine::ReleaseAll()
 {
-	constantBufferLight->Release();
-	constantBufferObj->Release();
-	texture->Release();
-	textureSRV->Release();
-	sampler->Release();
-	vertexBuffer->Release();
-	indexBuffer->Release();
-	inputLayout->Release();
-	vShader->Release();
-	pShader->Release();
+	//texture->Release();
+	//textureSRV->Release();
+	//sampler->Release();
+	//vertexBuffer->Release();
+	//indexBuffer->Release();
+	//inputLayout->Release();
+	//vShader->Release();
+	//pShader->Release();
 	dsView->Release();
 	dsTexture->Release();
 	rtv->Release();
 	swapChain->Release();
 	immediateConxtex->Release();
 	device->Release();
+	defRender.Release();
 }
 
 void Engine::Run()

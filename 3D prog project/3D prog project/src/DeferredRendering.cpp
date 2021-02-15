@@ -10,13 +10,14 @@ DeferredRendering::~DeferredRendering()
 {
 }
 
-void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Camera& cam, std::string filePath)
+void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, std::string filePath)
 {
 	this->device = device;
 	this->immediateConxtex = immadeiateContect;
 	this->rtv = rtv;
 	this->viewport = viewport;
 	this->filePath = filePath;
+	this->dsView = dsView;
 }
 
 bool DeferredRendering::LoadShaders()
@@ -360,7 +361,7 @@ void DeferredRendering::Render()
 	this->immediateConxtex->DrawIndexed(12, 0, 0);
 }
 
-void DeferredRendering::Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight* lightBuffer)
+void DeferredRendering::Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight* lightBuffer, Camera& cam)
 {
 	dx::XMMATRIX world = dx::XMMatrixIdentity();
 	dx::XMMATRIX translate = dx::XMMatrixIdentity();
@@ -375,8 +376,8 @@ void DeferredRendering::Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight
 
 	world = scale * translate * rotate;
 
-	view = dx::XMLoadFloat4x4(&this->cam.getView());
-	perspectiveProjection = dx::XMLoadFloat4x4(&this->cam.getPP());
+	view = dx::XMLoadFloat4x4(&cam.getView());
+	perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
 
 	dx::XMMATRIX wvp = world * view * perspectiveProjection;
 	dx::XMFLOAT4X4 saveMe;
@@ -393,6 +394,20 @@ void DeferredRendering::Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight
 
 	this->immediateConxtex->UpdateSubresource(this->constantBufferLight, 0, nullptr, lightBuffer, 0, 0);
 	this->immediateConxtex->PSSetConstantBuffers(0, 1, &this->constantBufferLight);
+}
+
+void DeferredRendering::Release()
+{
+	this->inputLayout->Release();
+	this->textureSRV->Release();
+	this->sampler->Release();
+	this->vShader->Release();
+	this->pShader->Release();
+	this->texture->Release();
+	this->vertexBuffer->Release();
+	this->indexBuffer->Release();
+	this->constantBufferObj->Release();
+	this->constantBufferLight->Release();
 }
 
 //ID3D11Buffer DeferredRendering::gBuffer(ID3D11RenderTargetView gbufferRtv, ID3D11Texture2D texture2d, ID3D11ShaderResourceView shadersgbuffer)
