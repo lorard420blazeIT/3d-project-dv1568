@@ -3,6 +3,7 @@
 #include <iostream>
 #include <d3d11.h>
 #include "d3d11Helper.h"
+#include "DeferredRendering.h"
 #include <chrono>
 #include "PipelineHelper.h"
 #include "Window.h"
@@ -32,6 +33,7 @@ private:
 	cbFrameLight lightFrame;
 	InputHandler input;
 	Camera cam;
+	DeferredRendering defRender;
 
 	//For update 
 	MSG msg;
@@ -39,13 +41,13 @@ private:
 	float deltaTime;
 	float currentRotation;
 	float speed;
-	Render render;
+	//Render render;
 
 public:
 	ID3D11Device* device;
 	ID3D11DeviceContext* immediateConxtex;
 	IDXGISwapChain* swapChain;
-	ID3D11RenderTargetView* rtv;
+	ID3D11RenderTargetView *rtv;
 	ID3D11Texture2D* dsTexture;
 	ID3D11DepthStencilView* dsView;
 	D3D11_VIEWPORT viewport;

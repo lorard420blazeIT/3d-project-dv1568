@@ -37,7 +37,10 @@ bool Engine::SetUp()
 		std::cerr << "Failed to create D3D11!" << std::endl;
 		return false;
 	}
-	if (!SetupPipeline(device, vertexBuffer, vShader, pShader, inputLayout, texture, textureSRV, sampler, textureFilePath, constantBufferObj, constantBufferLight, indexBuffer, immediateConxtex))
+
+	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, cam, textureFilePath);
+
+	if (!defRender.SetupPipeline())
 	{
 		std::cerr << "Failed to setup pipeline!" << std::endl;
 		return false;
@@ -71,10 +74,9 @@ void Engine::Update()
 		input.Update();
 		cam.Update();
 		moveCamera();
-
-		render.render(immediateConxtex, rtv, dsView, viewport, vShader, pShader, inputLayout, vertexBuffer, textureSRV, sampler);
+		defRender.Render();
 		swapChain->Present(0, 0);
-		UpdateBuffer(constantBufferObj, constantBufferLight, immediateConxtex, &frame, currentRotation, &lightFrame, cam);
+		defRender.Update(&frame, currentRotation, &lightFrame);
 	}
 }
 
