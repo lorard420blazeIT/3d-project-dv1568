@@ -370,7 +370,7 @@ void DeferredRendering::Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight
 	dx::XMMATRIX view = dx::XMMatrixIdentity();
 	dx::XMMATRIX perspectiveProjection = dx::XMMatrixIdentity();
 
-	translate = dx::XMMatrixTranslation(0.0f, 0.0f, -1.5f);
+	translate = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 	scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
 	rotate = dx::XMMatrixRotationRollPitchYawFromVector({ 0, rot, 0 });
 
