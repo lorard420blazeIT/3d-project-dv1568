@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include "structs.h"
+#include "Model.h"
 
 namespace dx = DirectX;
 
@@ -21,6 +22,8 @@ private:
 	ID3D11InputLayout* inputLayout;
 	ID3D11ShaderResourceView* textureSRV;
 	ID3D11SamplerState* sampler;
+	ID3D11SamplerState* CubesTextSamplerState;
+
 	D3D11_VIEWPORT viewport;
 	ID3D11VertexShader* vShader;
 	ID3D11PixelShader* pShader;
@@ -33,7 +36,23 @@ private:
 	ID3D11Buffer* constantBufferObj;
 	ID3D11Buffer* constantBufferLight;
 
+	ID3D11Buffer* cubeVertexBuffer;
+	ID3D11Buffer* cubeIndexBuffer;
 
+	dx::XMMATRIX world = dx::XMMatrixIdentity();
+	dx::XMMATRIX translate = dx::XMMatrixIdentity();
+	dx::XMMATRIX scale = dx::XMMatrixIdentity();
+	dx::XMMATRIX rotate = dx::XMMatrixIdentity();
+	dx::XMMATRIX view = dx::XMMatrixIdentity();
+	dx::XMMATRIX perspectiveProjection = dx::XMMatrixIdentity();
+
+	dx::XMMATRIX translateCube = dx::XMMatrixIdentity();
+	dx::XMMATRIX worldCube = dx::XMMatrixIdentity();
+
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+
+	Model object;
 	//Camera cam;
 
 public:
@@ -52,6 +71,9 @@ public:
 	void position();
 	void Render();
 	void Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight* lightBuffer, Camera& cam);
+	bool ObjCreateBuffers(Model &obj);
+	void RenderObj(cbFrameObj* cbPerObj, Camera& cam);
+	bool CreateCubeSamplerState();
 	void Release();
 	/*ID3D11Buffer gBuffer(ID3D11RenderTargetView gbufferRtv, ID3D11Texture2D texture2d, ID3D11ShaderResourceView shadersgbuffer);*/
 };

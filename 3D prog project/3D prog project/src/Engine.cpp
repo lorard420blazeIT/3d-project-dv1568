@@ -40,6 +40,18 @@ bool Engine::SetUp()
 
 	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, textureFilePath);
 
+	if (!object.LoadOBJ(L"../3D Models/testCube.obj", true, false))
+	{
+		std::cerr << "Failed to load OBJ " << std::endl;
+		return false;
+	}
+
+	if (!defRender.ObjCreateBuffers(object))
+	{
+		std::cerr << "Failed to create Buffers" << std::endl;
+		return false;
+	}
+
 	if (!defRender.SetupPipeline())
 	{
 		std::cerr << "Failed to setup pipeline!" << std::endl;
@@ -69,12 +81,13 @@ void Engine::Update()
 		using ms = std::chrono::duration<float, std::milli>;
 		deltaTime = std::chrono::duration_cast<ms>(timeStop - timeStart).count() / 1000;
 
-		currentRotation = deltaTime * speed;
+		currentRotation = 0;//deltaTime * speed;
 
 		input.Update();
 		cam.Update();
 		moveCamera();
 		defRender.Render();
+		defRender.RenderObj(&frame, cam);
 		swapChain->Present(0, 0);
 		defRender.Update(&frame, currentRotation, &lightFrame, cam);
 	}
@@ -101,6 +114,7 @@ void Engine::ReleaseAll()
 
 void Engine::Run()
 {
+
 	if (!SetUp())
 	{
 		std::cerr << "Failed to setup" << std::endl;
@@ -111,7 +125,7 @@ void Engine::Run()
 
 void Engine::moveCamera()
 {
-	float speed = 0.003;
+	float speed = 0.002;
 	if (input.KeyPressed(KEY(W)))
 	{
 		cam.movefoward(speed);
@@ -132,14 +146,13 @@ void Engine::moveCamera()
 		cam.moveRight(speed);
 	}
 
-	if (input.KeyPressed(KEY(V)))
+	if (input.KeyPressed(KEY(Q)))
 	{
 		cam.SetStartPos();
 	}
 	
 	if (input.UpdateMouse())
 	{
-		std::cout << "go in the if sats " << std::endl;
 
 		cam.subYawPitchRoll(-input.getdelta());
 

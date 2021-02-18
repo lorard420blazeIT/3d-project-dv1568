@@ -14,21 +14,25 @@ namespace dx = DirectX;
 
 struct  SimpleVertex
 {
-	float pos[3] = { 0 };
+	dx::XMFLOAT3 pos;
+	dx::XMFLOAT2 uv;
+	dx::XMFLOAT3 clr;
+	dx::XMFLOAT3 norm;
+	/*float pos[3] = { 0 };
 	float uv[2] = { 0 };
 	float clr[3] = { 0 };
-	float norm[3] = { 0 };
+	float norm[3] = { 0 };*/
 
-	SimpleVertex(const std::array<float, 3> position = { 0,0,0 }, const std::array<float, 2> uvCoords = { 0,0 }, const std::array<float, 3> color = { 1,0,1 }, const std::array<float, 3> normal = { 0,0,0 })    //Ask teacher
+	SimpleVertex(const dx::XMFLOAT3 position = { 0,0,0 }, const dx::XMFLOAT2 uvCoords = { 0,0 }, const dx::XMFLOAT3 color = { 1,0,1 }, dx::XMFLOAT3 normal = { 0,0,0 })    //Ask teacher
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			pos[i] = position[i];
-			clr[i] = color[i];
-			norm[i] = normal[i];
+			pos = position;
+			clr = color;
+			norm = normal;
 		}
-		uv[0] = uvCoords[0];
-		uv[1] = uvCoords[1];
+		uv = uvCoords;
+		uv = uvCoords;
 	}
 };
 
@@ -37,9 +41,15 @@ struct cbFrameObj//Använder XMFloat4x4 för XMMatrix lätt blir messy med minnes f
 {
 	dx::XMFLOAT4X4 wvp;//Perform offsett and rotation 4 bits per
 	dx::XMFLOAT4X4 world;
-	dx::XMFLOAT4X4 scale;
-	dx::XMFLOAT4X4 rotation;
-	dx::XMFLOAT4X4 view;
+
+	//Pixel shader obj loader tutorial
+	dx::XMFLOAT4 difColor;
+	bool hasTexture;
+
+	//Old things we never used anyway
+	//dx::XMFLOAT4X4 scale;
+	//dx::XMFLOAT4X4 rotation;
+	//dx::XMFLOAT4X4 view;
 
 	//aling all the way 
 };
@@ -60,4 +70,13 @@ struct cbFrameLight
 
 	float specPower;
 	dx::XMFLOAT3 pad5;
+};
+
+struct SurfaceMaterial 
+{
+	std::wstring matName;
+	dx::XMFLOAT4 difColor;
+	int textArrayIndex;
+	bool hasTexture;
+	//bool transparent;
 };

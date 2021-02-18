@@ -12,6 +12,7 @@
 #include "InputHandler.h"
 #include "SimpleMath.h"
 #include <algorithm>
+#include "Model.h"
 
 
 namespace dx = DirectX;
@@ -34,6 +35,7 @@ private:
 	InputHandler input;
 	Camera cam;
 	DeferredRendering defRender;
+	Model object;
 
 	//For update 
 	MSG msg;

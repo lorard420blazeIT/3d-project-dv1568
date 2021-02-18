@@ -8,16 +8,16 @@ struct VertexShaderInput
 {
 	float3 position : POSITION;
 	float2 uv : UV;
-	float3 color : COLOR;
 	float3 normal : NORMAL;
+	float3 color : COLOR;
 };
 
 struct VertexShaderOutput 
 {
 	float4 position : SV_POSITION;
 	float2 uv : UV;
-	float3 color : COLOR;
 	float3 normal : NORMAL;
+	float3 color : COLOR;
 	float4 worldPos : WORLDPOS;
 };
 
