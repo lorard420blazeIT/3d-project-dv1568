@@ -51,6 +51,11 @@ bool Engine::SetUp()
 		std::cerr << "Failed to create Buffers" << std::endl;
 		return false;
 	}
+	if (!defRender.CreateCubeSamplerState())
+	{
+		std::cerr << "Failed to create samplerstate to cube" << std::endl;
+		return false;
+	}
 
 	if (!defRender.SetupPipeline())
 	{
@@ -86,10 +91,12 @@ void Engine::Update()
 		input.Update();
 		cam.Update();
 		moveCamera();
+
+		defRender.Update(&frame, currentRotation, &lightFrame, cam);
 		defRender.Render();
 		defRender.RenderObj(&frame, cam);
+
 		swapChain->Present(0, 0);
-		defRender.Update(&frame, currentRotation, &lightFrame, cam);
 	}
 }
 

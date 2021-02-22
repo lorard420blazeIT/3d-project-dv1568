@@ -92,6 +92,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 				if (checkChar == ' ')
 				{
 					subSetIndexStart.push_back(vIndex);
+					subSetIndexStart.push_back(vIndex);
 					subSetcount++;
 				}
 				break;
@@ -355,11 +356,11 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 	//AfterLoading Preperation
 	subSetIndexStart.push_back(vIndex);
 
-	/*if (subSetIndexStart[1] == 0)
+	if (subSetIndexStart[1] == 0)
 	{
 		subSetIndexStart.erase(subSetIndexStart.begin() + 1);
-		meshSubsets--;
-	}*/
+		subSetcount--;
+	}
 
 	if (!hasNorm)
 	{
@@ -397,9 +398,10 @@ void Model::CreateVerticies()
 		tempvert.pos = vertPos[vertPosIndex[i]];
 		tempvert.norm = vertNorm[vertNormIndex[i]];
 		tempvert.uv = vertTextCoord[vertTCIndex[i]];
-
+		tempvert.clr = dx::XMFLOAT3(0, 0, 1);
 		verticies.push_back(tempvert);
 	}
+
 }
 
 void Model::ComputeNormals()

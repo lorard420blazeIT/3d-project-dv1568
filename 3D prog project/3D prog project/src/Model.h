@@ -73,7 +73,7 @@ public:
 	std::vector<unsigned int> getIndicies() const { return indices; }
 	std::vector<SimpleVertex> getVerticies() const { return verticies; }
 	int getNrofIndices() const { return indices.size(); }
-	int getMeshSubsets() const { return meshSubsets;  }
+	int getMeshSubsets() const { return subSetcount;  }
 	std::vector<int> getSubsetsIndexStart() const { return subSetIndexStart; }
 
 
