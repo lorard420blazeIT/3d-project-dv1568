@@ -58,7 +58,7 @@ private:
 public:
 	DeferredRendering();
 	~DeferredRendering();
-	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView *&rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, std::string filePath);
+	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView *&rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, std::string filePath, Model& obj);
 	bool LoadShaders();
 	bool CreateInputLayout();
 	bool CreateVertexBuffer();
@@ -69,11 +69,10 @@ public:
 	bool CreateSamplerState();
 	bool SetupPipeline();
 	void position();
-	void Render();
+	void Render(cbFrameObj* cbPerObj);
 	void Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight* lightBuffer, Camera& cam);
-	bool ObjCreateBuffers(Model &obj);
+	bool ObjCreateBuffers();
 	void RenderObj(cbFrameObj* cbPerObj, Camera& cam);
 	bool CreateCubeSamplerState();
 	void Release();
-	/*ID3D11Buffer gBuffer(ID3D11RenderTargetView gbufferRtv, ID3D11Texture2D texture2d, ID3D11ShaderResourceView shadersgbuffer);*/
 };

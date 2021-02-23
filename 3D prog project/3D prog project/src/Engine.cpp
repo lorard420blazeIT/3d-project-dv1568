@@ -38,15 +38,15 @@ bool Engine::SetUp()
 		return false;
 	}
 
-	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, textureFilePath);
-
-	if (!object.LoadOBJ(L"../3D Models/testCube.obj", true, false))
+	if (!object.LoadOBJ(L"../3D Models/testCube.obj", true, true))
 	{
 		std::cerr << "Failed to load OBJ " << std::endl;
 		return false;
 	}
 
-	if (!defRender.ObjCreateBuffers(object))
+	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, textureFilePath, object);
+
+	if (!defRender.ObjCreateBuffers())
 	{
 		std::cerr << "Failed to create Buffers" << std::endl;
 		return false;
@@ -93,7 +93,7 @@ void Engine::Update()
 		moveCamera();
 
 		defRender.Update(&frame, currentRotation, &lightFrame, cam);
-		defRender.Render();
+		defRender.Render(&frame);
 		defRender.RenderObj(&frame, cam);
 
 		swapChain->Present(0, 0);

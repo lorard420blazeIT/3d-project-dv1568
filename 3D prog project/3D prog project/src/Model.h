@@ -36,8 +36,8 @@ private:
 	std::vector<dx::XMFLOAT3> vertPos;
 	std::vector<dx::XMFLOAT3> vertNorm;
 	std::vector<dx::XMFLOAT2> vertTextCoord;
-
-	std::vector<std::string> meshMaterials;
+	std::vector<std::wstring> meshMaterials;
+	std::vector<SurfaceMaterial> material;
 
 	//Vertex definition indicies
 	std::vector<int> vertPosIndex;
@@ -70,11 +70,11 @@ public:
 	void ComputeNormals();
 	int getMeshTriangles() const { return this->meshTriangles; }
 	int getTotaltVerts() const { return this->totalVerts; }
-	std::vector<unsigned int> getIndicies() const { return indices; }
-	std::vector<SimpleVertex> getVerticies() const { return verticies; }
-	int getNrofIndices() const { return indices.size(); }
-	int getMeshSubsets() const { return subSetcount;  }
-	std::vector<int> getSubsetsIndexStart() const { return subSetIndexStart; }
+	std::vector<unsigned int> getIndicies() const { return this->indices; }
+	std::vector<SimpleVertex> getVerticies() const { return this->verticies; }
+	int getNrofIndices() const { return this->indices.size(); }
+	int getMeshSubsets() const { return this->subSetcount;  }
+	std::vector<int> getSubsetsIndexStart() const { return this->subSetIndexStart; }
 
 
 	//std::vector<int> GetMeshSubsetIndexStart() const { return meshSubsetIndexStart; }

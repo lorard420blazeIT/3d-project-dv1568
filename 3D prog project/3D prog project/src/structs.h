@@ -16,20 +16,20 @@ struct  SimpleVertex
 {
 	dx::XMFLOAT3 pos;
 	dx::XMFLOAT2 uv;
-	dx::XMFLOAT3 clr;
 	dx::XMFLOAT3 norm;
+	dx::XMFLOAT3 clr;
 	/*float pos[3] = { 0 };
 	float uv[2] = { 0 };
 	float clr[3] = { 0 };
 	float norm[3] = { 0 };*/
 
-	SimpleVertex(const dx::XMFLOAT3 position = { 0,0,0 }, const dx::XMFLOAT2 uvCoords = { 0,0 }, const dx::XMFLOAT3 color = { 1,0,1 }, dx::XMFLOAT3 normal = { 0,0,0 })    //Ask teacher
+	SimpleVertex(const dx::XMFLOAT3 position = { 0,0,0 }, const dx::XMFLOAT2 uvCoords = { 0,0 }, dx::XMFLOAT3 normal = { 0,0,0 }, const dx::XMFLOAT3 color = { 1,0,1 })    //Ask teacher
 	{
 		for (int i = 0; i < 3; i++)
 		{
 			pos = position;
-			clr = color;
 			norm = normal;
+			clr = color;
 		}
 		uv = uvCoords;
 		uv = uvCoords;
@@ -78,5 +78,4 @@ struct SurfaceMaterial
 	dx::XMFLOAT4 difColor;
 	int textArrayIndex;
 	bool hasTexture;
-	//bool transparent;
 };

@@ -10,7 +10,7 @@ DeferredRendering::~DeferredRendering()
 {
 }
 
-void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, std::string filePath)
+void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, std::string filePath, Model &obj)
 {
 	this->device = device;
 	this->immediateConxtex = immadeiateContect;
@@ -18,6 +18,7 @@ void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& 
 	this->viewport = viewport;
 	this->filePath = filePath;
 	this->dsView = dsView;
+	this->object = obj;
 }
 
 bool DeferredRendering::LoadShaders()
@@ -123,7 +124,6 @@ bool DeferredRendering::CreateVertexBuffer()
 
 	D3D11_BUFFER_DESC bufferDesc = { 0 }; //Deaufalt alla v�rden till 0;
 	bufferDesc.ByteWidth = sizeof(quad);
-	//bufferDesc.ByteWidth = sizeof(SimpleVertex) * object.getTotaltVerts();
 	bufferDesc.Usage = D3D11_USAGE_IMMUTABLE;
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
@@ -132,7 +132,6 @@ bool DeferredRendering::CreateVertexBuffer()
 
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem = quad;
-	//data.pSysMem = &object.getVerticies()[0];
 	data.SysMemPitch = 0;
 	data.SysMemSlicePitch = 0;
 
@@ -162,7 +161,6 @@ bool DeferredRendering::CreateIndexBuffer()
 	data.pSysMem = indicies;
 
 	HRESULT hr = this->device->CreateBuffer(&bufferDesc, &data, &this->indexBuffer);
-	this->immediateConxtex->IASetIndexBuffer(this->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	return !FAILED(hr);
 }
@@ -341,7 +339,7 @@ void DeferredRendering::position()
 {
 }
 
-void DeferredRendering::Render()
+void DeferredRendering::Render(cbFrameObj* cbPerObj)
 {
 	float clearColor[4] = { 0.58f, 0.44, 0.86, 1.0 };
 	this->immediateConxtex->ClearRenderTargetView(this->rtv, clearColor);
@@ -359,21 +357,37 @@ void DeferredRendering::Render()
 	this->immediateConxtex->OMSetRenderTargets(1, &this->rtv, this->dsView);
 
 	this->immediateConxtex->DrawIndexed(12, 0, 0);
+
+	this->translate = dx::XMMatrixTranslation(2.0f, 0.0f, 0.0f);
+
+	this->world = this->scale * this->translate * this->rotate;
+
+	dx::XMMATRIX wvp = this->world * this->view * this->perspectiveProjection;
+	dx::XMFLOAT4X4 saveMe;
+	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(wvp));
+	cbPerObj->wvp = saveMe;
+	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(world));
+	cbPerObj->world = saveMe;
+
+	this->immediateConxtex->UpdateSubresource(this->constantBufferObj, 0, nullptr, cbPerObj, 0, 0);
+	this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
+	this->immediateConxtex->DrawIndexed(12, 0, 0);
+
 }
 
 void DeferredRendering::Update(cbFrameObj* cbPerObj, float& rot, cbFrameLight* lightBuffer, Camera& cam)
 {
-	translateCube = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-	translate = dx::XMMatrixTranslation(-2.0f, 0.0f, 0.0f);
-	scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
-	rotate = dx::XMMatrixRotationRollPitchYawFromVector({ 0, rot, 0 });
+	this->translateCube = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	this->translate = dx::XMMatrixTranslation(-2.0f, 0.0f, 0.0f);
+	this->scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	this->rotate = dx::XMMatrixRotationRollPitchYawFromVector({ 0, rot, 0 });
 
-	world = scale * translate * rotate;
+	this->world = this->scale * this->translate * this->rotate;
 
-	view = dx::XMLoadFloat4x4(&cam.getView());
-	perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
+	this->view = dx::XMLoadFloat4x4(&cam.getView());
+	this->perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
 
-	dx::XMMATRIX wvp = world * view * perspectiveProjection;
+	dx::XMMATRIX wvp = this->world * this->view * this->perspectiveProjection;
 	dx::XMFLOAT4X4 saveMe;
 	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(wvp));
 	cbPerObj->wvp = saveMe;
@@ -416,16 +430,14 @@ bool DeferredRendering::CreateCubeSamplerState()
 	sampDesc.MinLOD = 0;
 	sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-	HRESULT hr = device->CreateSamplerState(&sampDesc, &CubesTextSamplerState);
+	HRESULT hr = this->device->CreateSamplerState(&sampDesc, &CubesTextSamplerState);
 	return !FAILED(hr);
 }
 
-bool DeferredRendering::ObjCreateBuffers(Model& obj)
+bool DeferredRendering::ObjCreateBuffers()
 {
-	this->object = obj;
-
 	//Create indexBuffer
-	D3D11_BUFFER_DESC indexBufferDesc;
+	D3D11_BUFFER_DESC indexBufferDesc = { 0 };
 	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
 
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -435,10 +447,9 @@ bool DeferredRendering::ObjCreateBuffers(Model& obj)
 	indexBufferDesc.MiscFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA iinitData;
-	iinitData.pSysMem = this->object.getIndicies().data();
+	iinitData.pSysMem = &this->object.getIndicies()[0];
 
-
-	HRESULT hrI = device->CreateBuffer(&indexBufferDesc, &iinitData, &this->cubeIndexBuffer);
+	HRESULT hrI = this->device->CreateBuffer(&indexBufferDesc, &iinitData, &this->cubeIndexBuffer);
 
 	if (FAILED(hrI))
 	{
@@ -447,20 +458,22 @@ bool DeferredRendering::ObjCreateBuffers(Model& obj)
 	}
 
 	//Create Vertexbuffer
-	D3D11_BUFFER_DESC vertexBufferDesc;
+	D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
 
-	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(SimpleVertex) * this->object.getTotaltVerts();
+	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
+	vertexBufferDesc.StructureByteStride = 0;
 
 	D3D11_SUBRESOURCE_DATA vertexBufferData;
-	ZeroMemory(&vertexBufferData, sizeof(vertexBufferData));
-	vertexBufferData.pSysMem = this->object.getVerticies().data());
+	vertexBufferData.pSysMem = &this->object.getVerticies()[0];
+	vertexBufferData.SysMemPitch = 0;
+	vertexBufferData.SysMemSlicePitch = 0;
 	
-	HRESULT hrV = device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &this->cubeVertexBuffer);
+	HRESULT hrV = this->device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &this->cubeVertexBuffer);
 
 	if (FAILED(hrV))
 	{
@@ -479,19 +492,19 @@ void DeferredRendering::RenderObj(cbFrameObj* cbPerObj, Camera& cam)
 	//{
 		//std::cout << "in for loop" << std::endl;
 
-		immediateConxtex->IASetIndexBuffer(this->cubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-		immediateConxtex->IASetVertexBuffers(0, 1, &this->cubeVertexBuffer, &stride, &offset);
+		this->immediateConxtex->IASetIndexBuffer(this->cubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+		this->immediateConxtex->IASetVertexBuffers(0, 1, &this->cubeVertexBuffer, &this->stride, &this->offset);
 		//immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		translate = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-		scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
-		rotate = dx::XMMatrixRotationRollPitchYawFromVector({ 0, 0, 0 });
-		worldCube = scale * translateCube * rotate;
+		this->translate = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+		this->scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+		this->rotate = dx::XMMatrixRotationRollPitchYawFromVector({ 0, 0, 0 });
+		this->worldCube = this->scale * this->translateCube * this->rotate;
 
-		view = dx::XMLoadFloat4x4(&cam.getView());
-		perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
+		this->view = dx::XMLoadFloat4x4(&cam.getView());
+		this->perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
 
-		dx::XMMATRIX wvp = worldCube * view * perspectiveProjection;
+		dx::XMMATRIX wvp = this->worldCube * this->view * this->perspectiveProjection;
 		dx::XMFLOAT4X4 saveMe;
 		dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(wvp));
 		cbPerObj->wvp = saveMe;
@@ -502,15 +515,10 @@ void DeferredRendering::RenderObj(cbFrameObj* cbPerObj, Camera& cam)
 		this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
 		this->immediateConxtex->PSSetConstantBuffers(1, 1, &this->constantBufferObj);
 		this->immediateConxtex->PSSetShaderResources(0, 1, &this->textureSRV);
-		this->immediateConxtex->PSSetSamplers(0, 1, &sampler);
+		this->immediateConxtex->PSSetSamplers(0, 1, &this->sampler);
 
-		int indexStart = object.getSubsetsIndexStart()[0];
-		int indexDrawAmunt = object.getSubsetsIndexStart()[0 + 1] - object.getSubsetsIndexStart()[0];
-		immediateConxtex->DrawIndexed(indexDrawAmunt, 0, 0);
+		int indexStart = this->object.getSubsetsIndexStart()[0];
+		int indexDrawAmunt = this->object.getSubsetsIndexStart()[0 + 1] - this->object.getSubsetsIndexStart()[0];
+		this->immediateConxtex->DrawIndexed(indexDrawAmunt, 0, 0);
 	//}
 }
-
-//ID3D11Buffer DeferredRendering::gBuffer(ID3D11RenderTargetView gbufferRtv, ID3D11Texture2D texture2d, ID3D11ShaderResourceView shadersgbuffer)
-//{
-//    return ID3D11Buffer();
-//}

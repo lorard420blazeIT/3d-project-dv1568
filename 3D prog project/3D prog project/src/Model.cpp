@@ -21,21 +21,21 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 		while (fileIn)
 		{
-			checkChar = fileIn.get();
+			this->checkChar = fileIn.get();
 
-			switch (checkChar)
+			switch (this->checkChar)
 			{
 			case '#':
-				checkChar = fileIn.get();
-				while (checkChar != '\n')
+				this->checkChar = fileIn.get();
+				while (this->checkChar != '\n')
 				{
-					checkChar = fileIn.get();
+					this->checkChar = fileIn.get();
 				}
 				break;
 
 			case 'v':
-				checkChar = fileIn.get();
-				if (checkChar == ' ')
+				this->checkChar = fileIn.get();
+				if (this->checkChar == ' ')
 				{
 					float vz, vy, vx;
 					fileIn >> vx >> vy >> vz;
@@ -43,15 +43,15 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 					if (isRHCoordSys)
 					{
-						vertPos.push_back(dx::XMFLOAT3(vx, vy, vz * -1.0f));
+						this->vertPos.push_back(dx::XMFLOAT3(vx, vy, vz * -1.0f));
 					}
 					else
 					{
-						vertPos.push_back(dx::XMFLOAT3(vx, vy, vz));
+						this->vertPos.push_back(dx::XMFLOAT3(vx, vy, vz));
 					}
 				}
 
-				if (checkChar == 't')
+				if (this->checkChar == 't')
 				{
 					float vtcu, vtcv;
 					fileIn >> vtcu >> vtcv;
@@ -59,16 +59,16 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 					if (isRHCoordSys)
 					{
-						vertTextCoord.push_back(dx::XMFLOAT2(vtcu, 1.0f - vtcv));
+						this->vertTextCoord.push_back(dx::XMFLOAT2(vtcu, 1.0f - vtcv));
 					}
 					else
 					{
-						vertTextCoord.push_back(dx::XMFLOAT2(vtcu, vtcv));
+						this->vertTextCoord.push_back(dx::XMFLOAT2(vtcu, vtcv));
 					}
-					hasTexCoord = true;
+					this->hasTexCoord = true;
 				}
 
-				if (checkChar == 'n')
+				if (this->checkChar == 'n')
 				{
 					float vnx, vny, vnz;
 					fileIn >> vnx >> vny >> vnz;
@@ -77,57 +77,57 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 					if (isRHCoordSys)
 					{
-						vertNorm.push_back(dx::XMFLOAT3(vnx, vny, vnz * -1.0f));
+						this->vertNorm.push_back(dx::XMFLOAT3(vnx, vny, vnz * -1.0f));
 					}
 					else
 					{
-						vertNorm.push_back(dx::XMFLOAT3(vnx, vny, vnz));
+						this->vertNorm.push_back(dx::XMFLOAT3(vnx, vny, vnz));
 					}
-					hasNorm = true;
+					this->hasNorm = true;
 				}
 				break;
 
 			case 'g':
-				checkChar = fileIn.get();
-				if (checkChar == ' ')
+				this->checkChar = fileIn.get();
+				if (this->checkChar == ' ')
 				{
-					subSetIndexStart.push_back(vIndex);
-					subSetIndexStart.push_back(vIndex);
-					subSetcount++;
+					this->subSetIndexStart.push_back(vIndex);
+					this->subSetIndexStart.push_back(vIndex);
+					this->subSetcount++;
 				}
 				break;
 
 				//Loading Faces
 			case 'f':
-				checkChar = fileIn.get();
+				this->checkChar = fileIn.get();
 
-				if (checkChar == ' ')
+				if (this->checkChar == ' ')
 				{
-					face = L"";
+					this->face = L"";
 					std::wstring VertDef;    
-					triangleCount = 0;
+					this->triangleCount = 0;
 
-					checkChar = fileIn.get();
-					while (checkChar != '\n')
+					this->checkChar = fileIn.get();
+					while (this->checkChar != '\n')
 					{
-						face += checkChar;            
-						checkChar = fileIn.get();    
-						if (checkChar == ' ')
+						this->face += this->checkChar;
+						this->checkChar = fileIn.get();
+						if (this->checkChar == ' ')
 						{
-							triangleCount++;
+							this->triangleCount++;
 						}
 					}
 
-					if (face[face.length() - 1] == ' ')
+					if (this->face[face.length() - 1] == ' ')
 					{
-						triangleCount--;
+						this->triangleCount--;
 					}
 
-					triangleCount -= 1;
+					this->triangleCount -= 1;
 
-					std::wstringstream ss(face);
+					std::wstringstream ss(this->face);
 
-					if (face.length() > 0)
+					if (this->face.length() > 0)
 					{
 						int firstVIndex, lastVIndex;
 
@@ -151,13 +151,13 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 									if (whichPart == 0)
 									{
-										wstringToInt >> vertPosIndexTemp;
-										vertPosIndexTemp -= 1;
+										wstringToInt >> this->vertPosIndexTemp;
+										this->vertPosIndexTemp -= 1;
 
 										if (j == VertDef.length() - 1)
 										{
-											vertNormIndexTemp = 0;
-											vertTCIndexTemp = 0;
+											this->vertNormIndexTemp = 0;
+											this->vertTCIndexTemp = 0;
 										}
 									}
 
@@ -165,25 +165,25 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 									{
 										if (vertPart != L"")
 										{
-											wstringToInt >> vertTCIndexTemp;
-											vertTCIndexTemp -= 1;
+											wstringToInt >> this->vertTCIndexTemp;
+											this->vertTCIndexTemp -= 1;
 										}
 										else
 										{
-											vertTCIndexTemp = 0;
+											this->vertTCIndexTemp = 0;
 										}
 
 										if (j == VertDef.length() - 1)
 										{
-											vertNormIndexTemp = 0;
+											this->vertNormIndexTemp = 0;
 										}
 									}
 
 									else if (whichPart == 2)
 									{
 										std::wistringstream wstringToInt(vertPart);
-										wstringToInt >> vertNormIndexTemp;
-										vertNormIndexTemp -= 1;
+										wstringToInt >> this->vertNormIndexTemp;
+										this->vertNormIndexTemp -= 1;
 									}
 
 									vertPart = L"";
@@ -192,23 +192,23 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 							}
 
 							//Storing faces
-							if (subSetcount == 0)
+							if (this->subSetcount == 0)
 							{
-								subSetIndexStart.push_back(vIndex);
-								subSetcount++;
+								this->subSetIndexStart.push_back(this->vIndex);
+								this->subSetcount++;
 							}
 
 							bool vertAlreadyExsists = false;
 
-							if (totalVerts >= 3)
+							if (this->totalVerts >= 3)
 							{
-								for (int iCheck = 0; iCheck < totalVerts; iCheck++)
+								for (int iCheck = 0; iCheck < this->totalVerts; iCheck++)
 								{
-									if (vertPosIndexTemp == vertPosIndex[iCheck] && !vertAlreadyExsists)
+									if (this->vertPosIndexTemp == this->vertPosIndex[iCheck] && !vertAlreadyExsists)
 									{
-										if (vertTCIndexTemp == vertTCIndex[iCheck])
+										if (this->vertTCIndexTemp == this->vertTCIndex[iCheck])
 										{
-											indices.push_back(iCheck);
+											this->indices.push_back(iCheck);
 											vertAlreadyExsists = true;
 										}
 									}
@@ -217,35 +217,35 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 							if (!vertAlreadyExsists)
 							{
-								vertPosIndex.push_back(vertPosIndexTemp);
-								vertTCIndex.push_back(vertTCIndexTemp);
-								vertNormIndex.push_back(vertNormIndexTemp);
-								totalVerts++;
-								indices.push_back(totalVerts - 1);
+								this->vertPosIndex.push_back(this->vertPosIndexTemp);
+								this->vertTCIndex.push_back(this->vertTCIndexTemp);
+								this->vertNormIndex.push_back(this->vertNormIndexTemp);
+								this->totalVerts++;
+								this->indices.push_back(this->totalVerts - 1);
 							}
 
 							if (i == 0)
 							{
-								firstVIndex = indices[vIndex];
+								firstVIndex = this->indices[this->vIndex];
 							}
 
 							if (i == 2)
 							{
-								lastVIndex = indices[vIndex];
+								lastVIndex = this->indices[this->vIndex];
 							}
-							vIndex++;
+							this->vIndex++;
 						}
 
-						meshTriangles++;
+						this->meshTriangles++;
 
 						//Triangulate
-						for (int l = 0; l < triangleCount - 1; l++)
+						for (int l = 0; l < this->triangleCount - 1; l++)
 						{
-							indices.push_back(firstVIndex);
-							vIndex++;
+							this->indices.push_back(firstVIndex);
+							this->vIndex++;
 
-							indices.push_back(lastVIndex);
-							vIndex++;
+							this->indices.push_back(lastVIndex);
+							this->vIndex++;
 
 							ss >> VertDef;
 
@@ -265,13 +265,13 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 									if (whichPart == 0)
 									{
-										wstringToInt >> vertPosIndexTemp;
-										vertPosIndexTemp -= 1;
+										wstringToInt >> this->vertPosIndexTemp;
+										this->vertPosIndexTemp -= 1;
 
 										if (j == VertDef.length() - 1)
 										{
-											vertTCIndexTemp = 0;
-											vertPosIndexTemp = 0;
+											this->vertTCIndexTemp = 0;
+											this->vertPosIndexTemp = 0;
 										}
 									}
 
@@ -279,17 +279,17 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 									{
 										if (vertPart != L"")
 										{
-											wstringToInt >> vertTCIndexTemp;
-											vertTCIndexTemp -= 1;
+											wstringToInt >> this->vertTCIndexTemp;
+											this->vertTCIndexTemp -= 1;
 										}
 										else
 										{
-											vertTCIndexTemp = 0;
+											this->vertTCIndexTemp = 0;
 										}
 
 										if (j == VertDef.length() - 1)
 										{
-											vertNormIndexTemp = 0;
+											this->vertNormIndexTemp = 0;
 										}
 									}
 
@@ -297,8 +297,8 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 									{
 										std::wistringstream wstringToInt(vertPart);
 
-										wstringToInt >> vertNormIndexTemp;
-										vertNormIndexTemp -= 1;
+										wstringToInt >> this->vertNormIndexTemp;
+										this->vertNormIndexTemp -= 1;
 									}
 
 									vertPart = L"";
@@ -308,15 +308,15 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 							bool vertAlreadyExsist = false;
 
-							if (totalVerts >= 3)
+							if (this->totalVerts >= 3)
 							{
-								for (int iCheck = 0; iCheck < totalVerts; iCheck++)
+								for (int iCheck = 0; iCheck < this->totalVerts; iCheck++)
 								{
-									if (vertPosIndexTemp == vertPosIndex[iCheck] && !vertAlreadyExsist)
+									if (this->vertPosIndexTemp == this->vertPosIndex[iCheck] && !vertAlreadyExsist)
 									{
-										if (vertTCIndexTemp == vertTCIndex[iCheck])
+										if (this->vertTCIndexTemp == this->vertTCIndex[iCheck])
 										{
-											indices.push_back(iCheck);
+											this->indices.push_back(iCheck);
 											vertAlreadyExsist = true;
 										}
 									}
@@ -325,18 +325,77 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 							if (!vertAlreadyExsist)
 							{
-								vertPosIndex.push_back(vertPosIndexTemp);
-								vertTCIndex.push_back(vertTCIndexTemp);
-								vertNormIndex.push_back(vertNormIndexTemp);
+								this->vertPosIndex.push_back(this->vertPosIndexTemp);
+								this->vertTCIndex.push_back(this->vertTCIndexTemp);
+								this->vertNormIndex.push_back(this->vertNormIndexTemp);
 
-								totalVerts++;
-								indices.push_back(totalVerts - 1);
+								this->totalVerts++;
+								this->indices.push_back(this->totalVerts - 1);
 							}
 
-							lastVIndex = indices[vIndex];
+							lastVIndex = this->indices[this->vIndex];
 							
-							meshTriangles++;
-							vIndex++;
+							this->meshTriangles++;
+							this->vIndex++;
+						}
+					}
+				}
+				break;
+
+			case 'm' : 
+				checkChar = fileIn.get();
+				if (checkChar == 't')
+				{
+					checkChar == fileIn.get();
+					if (checkChar == 'l')
+					{
+						checkChar == fileIn.get();
+						if (checkChar == 'l')
+						{
+							checkChar == fileIn.get();
+							if (checkChar == 'i')
+							{
+								checkChar == fileIn.get();
+								if (checkChar == 'b')
+								{
+									checkChar == fileIn.get();
+									if (checkChar == ' ')
+									{
+										fileIn >> meshMathLib;
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+
+			case 'u' :
+				checkChar = fileIn.get();
+				if (checkChar == 's')
+				{
+					checkChar == fileIn.get();
+					if (checkChar == 'e')
+					{
+						checkChar == fileIn.get();
+						if (checkChar == 'm')
+						{
+							checkChar == fileIn.get();
+							if (checkChar == 't')
+							{
+								checkChar == fileIn.get();
+								if (checkChar == 'l')
+								{
+									checkChar == fileIn.get();
+									if (checkChar == ' ')
+									{
+										meshMaterialsTemp = L"";
+										
+										fileIn >> meshMaterialsTemp;
+										meshMaterials.push_back(meshMaterialsTemp);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -354,24 +413,201 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 	}
 
 	//AfterLoading Preperation
-	subSetIndexStart.push_back(vIndex);
+	this->subSetIndexStart.push_back(vIndex);
 
-	if (subSetIndexStart[1] == 0)
+	if (this->subSetIndexStart[1] == 0)
 	{
-		subSetIndexStart.erase(subSetIndexStart.begin() + 1);
-		subSetcount--;
+		this->subSetIndexStart.erase(this->subSetIndexStart.begin() + 1);
+		this->subSetcount--;
 	}
 
-	if (!hasNorm)
+	if (!this->hasNorm)
 	{
-		vertNorm.push_back(dx::XMFLOAT3(0.0f, 0.0f, 0.0f));
+		this->vertNorm.push_back(dx::XMFLOAT3(0.0f, 0.0f, 0.0f));
 	}
-	if (!hasTexCoord)
+	if (!this->hasTexCoord)
 	{
-		vertTextCoord.push_back(dx::XMFLOAT2(0.0f, 0.0f));
+		this->vertTextCoord.push_back(dx::XMFLOAT2(0.0f, 0.0f));
 	}
 
 	fileIn.close();
+	//fileIn.open(meshMathLib.c_str());
+
+	//std::wstring lastStringRead;
+	//int matCount = material.size();
+
+	//bool kdset = false;
+
+	//if (fileIn)
+	//{
+	//	while (fileIn)
+	//	{
+	//		checkChar = fileIn.get();
+	//		switch (checkChar)
+	//		{
+
+	//		case '#': //Comment
+	//			checkChar = fileIn.get();
+	//			while (checkChar != '\n')
+	//			{
+	//				checkChar = fileIn.get();
+	//			}
+	//			break;
+
+	//		case 'K': 
+	//			checkChar = fileIn.get();
+	//			if (checkChar == 'd') //Diffuse
+	//			{
+	//				checkChar = fileIn.get();
+
+	//				fileIn >> material[matCount - 1].difColor.x;
+	//				fileIn >> material[matCount - 1].difColor.y;
+	//				fileIn >> material[matCount - 1].difColor.z;
+
+	//				kdset = true;
+	//			}
+
+	//			if (checkChar == 'a') //Ambient
+	//			{
+	//				checkChar = fileIn.get();
+	//				if (!kdset)
+	//				{
+	//					fileIn >> material[matCount - 1].difColor.x;
+	//					fileIn >> material[matCount - 1].difColor.y;
+	//					fileIn >> material[matCount - 1].difColor.z;
+
+	//				}
+	//			}
+	//			break;
+
+	//		case 'm':
+	//			checkChar = fileIn.get();
+	//			if (checkChar == 'a')
+	//			{
+	//				checkChar = fileIn.get();
+	//				if (checkChar == 'p')
+	//				{
+	//					checkChar = fileIn.get();
+	//					if (checkChar == '_')
+	//					{
+	//						checkChar = fileIn.get();
+	//						if (checkChar == 'k')
+	//						{
+	//							checkChar = fileIn.get();
+	//							if (checkChar == 'd')
+	//							{
+	//								std::wstring fileNamePath;
+
+	//								fileIn.get();
+
+	//								bool textFilePathEnd = false;
+	//								while (!textFilePathEnd)
+	//								{
+	//									checkChar = fileIn.get();
+	//									fileNamePath += checkChar;
+
+	//									if (checkChar == '.')
+	//									{
+	//										for (int i = 0; i < 3; i++)
+	//										{
+	//											fileNamePath += fileIn.get();
+	//										}
+
+	//										textFilePathEnd = true;
+	//									}
+	//								}
+
+	//								bool alreadyLoaded = false;
+	//								for (int i = 0; i < textureNameArray.size(); i++)
+	//								{
+	//									if (fileNamePath == textureNameArray[i])
+	//									{
+	//										alreadyLoaded = true;
+	//										material[matCount - 1].textArrayIndex = i;
+	//										material[matCount - 1].hasTexture = true;
+
+	//									}
+	//								}
+	//								
+	//								if (!alreadyLoaded)
+	//								{
+	//									ID3D11ShaderResourceView* tempMeshSRV;
+	//									//CreateTextureFromFile ect ect
+	//								}
+	//							}
+	//						}
+	//					}
+
+	//					else if (checkChar == 'd') 
+	//					{
+	//						//Transparent??
+	//					}
+	//				}
+	//			}
+	//			break;
+
+	//		case 'n':
+	//			checkChar = fileIn.get();
+
+	//			if (checkChar == 'e')
+	//			{
+	//				checkChar = fileIn.get();
+	//				if (checkChar == 'w')
+	//				{
+	//					checkChar = fileIn.get();
+	//					if (checkChar == 'm')
+	//					{
+	//						checkChar = fileIn.get();
+	//						if (checkChar == 't')
+	//						{
+	//							checkChar = fileIn.get();
+	//							if (checkChar == 'l')
+	//							{
+	//								checkChar = fileIn.get();
+	//								if (checkChar == ' ')
+	//								{
+	//									SurfaceMaterial tempMat;
+	//									material.push_back(tempMat);
+	//									fileIn >> material[matCount].matName;
+	//									material[matCount].hasTexture = false;
+	//									material[matCount].textArrayIndex = 0;
+	//									matCount++;
+	//									kdset = false;
+	//								}
+	//							}
+	//						}
+	//					}
+	//				}
+	//			}
+	//			break;
+
+	//		default:
+	//			break;
+	//		}
+	//	}
+	//}
+	//else 
+	//{
+	//	std::cout << "Couldnt open mtl file: " << fileName.c_str() << std::endl;
+	//	return false;
+	//}
+
+	//for (int i = 0; i < subSetIndexStart.size(); i++)
+	//{
+	//	bool hasMat = false;
+	//	for (int j = 0; j < material.size(); j++)
+	//	{
+	//		if (meshMaterials[i] == material[j].matName)
+	//		{
+	//			subsetMaterialArray.push_back(j);
+	//			hasMat = true;
+	//		}
+	//	}
+	//	if (!hasMat) 
+	//	{
+	//		subsetMaterialArray.push_back(0);
+	//	}
+	//}
 
 	CreateVerticies();
 
@@ -385,21 +621,21 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 void Model::CreateVerticies()
 {
-	std::cout << "totalt Verticies: " << totalVerts << std::endl;
-	std::cout << "totalt triangles: " << triangleCount << std::endl;
-	std::cout << "totalt meshtriangles: " << meshTriangles << std::endl;
+	std::cout << "totalt Verticies: " << this->totalVerts << std::endl;
+	std::cout << "totalt triangles: " << this->triangleCount << std::endl;
+	std::cout << "totalt meshtriangles: " << this->meshTriangles << std::endl;
 
 	//std::cout << "totalt triangles: " << vertNorm[0].x << std::endl;
 	
 	SimpleVertex tempvert;
 
-	for (int i = 0; i < totalVerts; i++)
+	for (int i = 0; i < this->totalVerts; i++)
 	{
-		tempvert.pos = vertPos[vertPosIndex[i]];
-		tempvert.norm = vertNorm[vertNormIndex[i]];
-		tempvert.uv = vertTextCoord[vertTCIndex[i]];
+		tempvert.pos = this->vertPos[vertPosIndex[i]];
+		tempvert.norm = this->vertNorm[vertNormIndex[i]];
+		tempvert.uv = this->vertTextCoord[vertTCIndex[i]];
 		tempvert.clr = dx::XMFLOAT3(0, 0, 1);
-		verticies.push_back(tempvert);
+		this->verticies.push_back(tempvert);
 	}
 
 }
@@ -414,16 +650,16 @@ void Model::ComputeNormals()
 	dx::XMVECTOR edge2 = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
 	//Computing face Normals
-	for (int i = 0; i < meshTriangles; i++)
+	for (int i = 0; i < this->meshTriangles; i++)
 	{
-		vecX = verticies[indices[(i * 3)]].pos.x - verticies[indices[(i * 3) + 2]].pos.x;
-		vecY = verticies[indices[(i * 3)]].pos.y - verticies[indices[(i * 3) + 2]].pos.y;
-		vecZ = verticies[indices[(i * 3)]].pos.z - verticies[indices[(i * 3) + 2]].pos.z;
+		vecX = this->verticies[this->indices[(i * 3)]].pos.x - this->verticies[this->indices[(i * 3) + 2]].pos.x;
+		vecY = this->verticies[this->indices[(i * 3)]].pos.y - this->verticies[this->indices[(i * 3) + 2]].pos.y;
+		vecZ = this->verticies[this->indices[(i * 3)]].pos.z - this->verticies[this->indices[(i * 3) + 2]].pos.z;
 		edge1 = dx::XMVectorSet(vecX, vecY, vecZ, 0.0f);
 
-		vecX = verticies[indices[(i * 3)+2]].pos.x - verticies[indices[(i * 3) + 1]].pos.x;
-		vecY = verticies[indices[(i * 3)+2]].pos.y - verticies[indices[(i * 3) + 1]].pos.y;
-		vecZ = verticies[indices[(i * 3)+2]].pos.z - verticies[indices[(i * 3) + 1]].pos.z;
+		vecX = this->verticies[this->indices[(i * 3)+2]].pos.x - this->verticies[this->indices[(i * 3) + 1]].pos.x;
+		vecY = this->verticies[this->indices[(i * 3)+2]].pos.y - this->verticies[this->indices[(i * 3) + 1]].pos.y;
+		vecZ = this->verticies[this->indices[(i * 3)+2]].pos.z - this->verticies[this->indices[(i * 3) + 1]].pos.z;
 		edge2 = dx::XMVectorSet(vecX, vecY, vecZ, 0.0f);
 
 		dx::XMStoreFloat3(&unnormolized, dx::XMVector3Cross(edge1, edge2));
@@ -435,11 +671,11 @@ void Model::ComputeNormals()
 	int faceUsing = 0;
 	float tX, tY, tZ;
 
-	for (int i = 0; i < totalVerts; i++)
+	for (int i = 0; i < this->totalVerts; i++)
 	{	
-		for (int j = 0; j < meshTriangles; j++)
+		for (int j = 0; j < this->meshTriangles; j++)
 		{
-			if (indices[j * 3] == i || indices[(j * 3) + 1] || indices[(j * 3) + 2] == i)
+			if (this->indices[j * 3] == i || this->indices[(j * 3) + 1] || this->indices[(j * 3) + 2] == i)
 			{
 				tX = dx::XMVectorGetX(normalSum) + tempNormal[j].x;
 				tY = dx::XMVectorGetY(normalSum) + tempNormal[j].y;
@@ -450,11 +686,11 @@ void Model::ComputeNormals()
 			}
 		}
 
-		//normalSum = normalSum / (faceUsing);
+		//normalSum = normalSum / (faceUsing); //need to fix this
 
 		normalSum = dx::XMVector3Normalize(normalSum);
 
-		dx::XMStoreFloat3(&verticies[i].norm, normalSum);
+		dx::XMStoreFloat3(&this->verticies[i].norm, normalSum);
 		normalSum = dx::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		faceUsing = 0;
 	}
