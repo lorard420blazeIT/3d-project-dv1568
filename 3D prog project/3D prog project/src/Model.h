@@ -8,6 +8,8 @@
 #include <string>
 #include <sstream>
 #include "structs.h"
+#include "stb_image.h"
+#include <comdef.h>
 
 
 namespace dx = DirectX;
@@ -62,16 +64,22 @@ private:
 	int totalVerts = 0;
 	int meshTriangles = 0;
 
+	//Texture
+	int textureWidth = 0;
+	int textureHeight = 0;
+	int channels = sizeof(textureWidth);
+
 public:
 	Model();
 	~Model();
 	bool LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNormals);
 	void CreateVerticies();
 	void ComputeNormals();
+	void CreateTexture(std::wstring& fileNamePath);
 	int getMeshTriangles() const { return this->meshTriangles; }
 	int getTotaltVerts() const { return this->totalVerts; }
-	std::vector<unsigned int> getIndicies() const { return this->indices; }
-	std::vector<SimpleVertex> getVerticies() const { return this->verticies; }
+	std::vector<unsigned int> &getIndicies() { return this->indices; }
+	std::vector<SimpleVertex> &getVerticies() { return verticies; }
 	int getNrofIndices() const { return this->indices.size(); }
 	int getMeshSubsets() const { return this->subSetcount;  }
 	std::vector<int> getSubsetsIndexStart() const { return this->subSetIndexStart; }

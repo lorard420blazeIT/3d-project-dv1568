@@ -90,7 +90,7 @@ bool Window::setUpConsole()
 	FILE* fp = _fdopen(hConsole, "w");
 	freopen_s(&fp, "CONOUT$", "w", stdout); //Så cout syns i konsol fönstret
 	freopen_s(&fp, "CONOUT$", "w", stderr); // Så cerr syns i konsol fönstret
-
+	
 	return true;
 }
 

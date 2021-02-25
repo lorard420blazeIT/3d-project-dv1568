@@ -17,7 +17,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 	if (fileIn)
 	{
-		std::cout << "Could open obj file: " << fileName.c_str() << std::endl;
+		std::wcout << "Opened obj file: " << fileName << std::endl;
 
 		while (fileIn)
 		{
@@ -346,19 +346,19 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 				checkChar = fileIn.get();
 				if (checkChar == 't')
 				{
-					checkChar == fileIn.get();
+					checkChar = fileIn.get();
 					if (checkChar == 'l')
 					{
-						checkChar == fileIn.get();
+						checkChar = fileIn.get();
 						if (checkChar == 'l')
 						{
-							checkChar == fileIn.get();
+							checkChar = fileIn.get();
 							if (checkChar == 'i')
 							{
-								checkChar == fileIn.get();
+								checkChar = fileIn.get();
 								if (checkChar == 'b')
 								{
-									checkChar == fileIn.get();
+									checkChar = fileIn.get();
 									if (checkChar == ' ')
 									{
 										fileIn >> meshMathLib;
@@ -374,19 +374,19 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 				checkChar = fileIn.get();
 				if (checkChar == 's')
 				{
-					checkChar == fileIn.get();
+					checkChar = fileIn.get();
 					if (checkChar == 'e')
 					{
-						checkChar == fileIn.get();
+						checkChar = fileIn.get();
 						if (checkChar == 'm')
 						{
-							checkChar == fileIn.get();
+							checkChar = fileIn.get();
 							if (checkChar == 't')
 							{
-								checkChar == fileIn.get();
+								checkChar = fileIn.get();
 								if (checkChar == 'l')
 								{
-									checkChar == fileIn.get();
+									checkChar = fileIn.get();
 									if (checkChar == ' ')
 									{
 										meshMaterialsTemp = L"";
@@ -408,7 +408,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 	}
 	else
 	{
-		std::cout << "Couldnt open obj file: " << fileName.c_str() << std::endl;
+		std::wcout << "Couldnt open obj file: " << fileName.c_str() << std::endl;
 		return false;
 	}
 
@@ -431,183 +431,189 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 	}
 
 	fileIn.close();
-	//fileIn.open(meshMathLib.c_str());
+	//Materialet
+	meshMathLib = L"../3D Models/" + meshMathLib;
+	std::wcout << "Mtl filename" << meshMathLib << std::endl;
 
-	//std::wstring lastStringRead;
-	//int matCount = material.size();
+	fileIn.open(meshMathLib.c_str());
 
-	//bool kdset = false;
 
-	//if (fileIn)
-	//{
-	//	while (fileIn)
-	//	{
-	//		checkChar = fileIn.get();
-	//		switch (checkChar)
-	//		{
+	std::wstring lastStringRead;
+	int matCount = material.size();
 
-	//		case '#': //Comment
-	//			checkChar = fileIn.get();
-	//			while (checkChar != '\n')
-	//			{
-	//				checkChar = fileIn.get();
-	//			}
-	//			break;
+	bool kdset = false;
 
-	//		case 'K': 
-	//			checkChar = fileIn.get();
-	//			if (checkChar == 'd') //Diffuse
-	//			{
-	//				checkChar = fileIn.get();
+	if (fileIn)
+	{
+		std::wcout << "Opened mtl file: " << meshMathLib << std::endl;
 
-	//				fileIn >> material[matCount - 1].difColor.x;
-	//				fileIn >> material[matCount - 1].difColor.y;
-	//				fileIn >> material[matCount - 1].difColor.z;
+		while (fileIn)
+		{
+			checkChar = fileIn.get();
+			switch (checkChar)
+			{
 
-	//				kdset = true;
-	//			}
+			case '#': //Comment
+				checkChar = fileIn.get();
+				while (checkChar != '\n')
+				{
+					checkChar = fileIn.get();
+				}
+				break;
 
-	//			if (checkChar == 'a') //Ambient
-	//			{
-	//				checkChar = fileIn.get();
-	//				if (!kdset)
-	//				{
-	//					fileIn >> material[matCount - 1].difColor.x;
-	//					fileIn >> material[matCount - 1].difColor.y;
-	//					fileIn >> material[matCount - 1].difColor.z;
+			case 'K': 
+				checkChar = fileIn.get();
+				if (checkChar == 'd') //Diffuse
+				{
+					checkChar = fileIn.get();
 
-	//				}
-	//			}
-	//			break;
+					fileIn >> material[matCount - 1].difColor.x;
+					fileIn >> material[matCount - 1].difColor.y;
+					fileIn >> material[matCount - 1].difColor.z;
 
-	//		case 'm':
-	//			checkChar = fileIn.get();
-	//			if (checkChar == 'a')
-	//			{
-	//				checkChar = fileIn.get();
-	//				if (checkChar == 'p')
-	//				{
-	//					checkChar = fileIn.get();
-	//					if (checkChar == '_')
-	//					{
-	//						checkChar = fileIn.get();
-	//						if (checkChar == 'k')
-	//						{
-	//							checkChar = fileIn.get();
-	//							if (checkChar == 'd')
-	//							{
-	//								std::wstring fileNamePath;
+					kdset = true;
+				}
 
-	//								fileIn.get();
+				if (checkChar == 'a') //Ambient
+				{
+					checkChar = fileIn.get();
+					if (!kdset)
+					{
+						fileIn >> material[matCount - 1].difColor.x;
+						fileIn >> material[matCount - 1].difColor.y;
+						fileIn >> material[matCount - 1].difColor.z;
 
-	//								bool textFilePathEnd = false;
-	//								while (!textFilePathEnd)
-	//								{
-	//									checkChar = fileIn.get();
-	//									fileNamePath += checkChar;
+					}
+				}
+				break;
 
-	//									if (checkChar == '.')
-	//									{
-	//										for (int i = 0; i < 3; i++)
-	//										{
-	//											fileNamePath += fileIn.get();
-	//										}
+			case 'm':
+				checkChar = fileIn.get();
+				if (checkChar == 'a')
+				{
+					checkChar = fileIn.get();
+					if (checkChar == 'p')
+					{
+						checkChar = fileIn.get();
+						if (checkChar == '_')
+						{
+							checkChar = fileIn.get();
+							if (checkChar == 'k')
+							{
+								checkChar = fileIn.get();
+								if (checkChar == 'd')
+								{
+									std::wstring fileNamePath;
 
-	//										textFilePathEnd = true;
-	//									}
-	//								}
+									fileIn.get();
 
-	//								bool alreadyLoaded = false;
-	//								for (int i = 0; i < textureNameArray.size(); i++)
-	//								{
-	//									if (fileNamePath == textureNameArray[i])
-	//									{
-	//										alreadyLoaded = true;
-	//										material[matCount - 1].textArrayIndex = i;
-	//										material[matCount - 1].hasTexture = true;
+									bool textFilePathEnd = false;
+									while (!textFilePathEnd)
+									{
+										checkChar = fileIn.get();
+										fileNamePath += checkChar;
 
-	//									}
-	//								}
-	//								
-	//								if (!alreadyLoaded)
-	//								{
-	//									ID3D11ShaderResourceView* tempMeshSRV;
-	//									//CreateTextureFromFile ect ect
-	//								}
-	//							}
-	//						}
-	//					}
+										if (checkChar == '.')
+										{
+											for (int i = 0; i < 3; i++)
+											{
+												fileNamePath += fileIn.get();
+											}
 
-	//					else if (checkChar == 'd') 
-	//					{
-	//						//Transparent??
-	//					}
-	//				}
-	//			}
-	//			break;
+											textFilePathEnd = true;
+										}
+									}
 
-	//		case 'n':
-	//			checkChar = fileIn.get();
+									bool alreadyLoaded = false;
+									for (int i = 0; i < textureNameArray.size(); i++)
+									{
+										if (fileNamePath == textureNameArray[i])
+										{
+											alreadyLoaded = true;
+											material[matCount - 1].textArrayIndex = i;
+											material[matCount - 1].hasTexture = true;
 
-	//			if (checkChar == 'e')
-	//			{
-	//				checkChar = fileIn.get();
-	//				if (checkChar == 'w')
-	//				{
-	//					checkChar = fileIn.get();
-	//					if (checkChar == 'm')
-	//					{
-	//						checkChar = fileIn.get();
-	//						if (checkChar == 't')
-	//						{
-	//							checkChar = fileIn.get();
-	//							if (checkChar == 'l')
-	//							{
-	//								checkChar = fileIn.get();
-	//								if (checkChar == ' ')
-	//								{
-	//									SurfaceMaterial tempMat;
-	//									material.push_back(tempMat);
-	//									fileIn >> material[matCount].matName;
-	//									material[matCount].hasTexture = false;
-	//									material[matCount].textArrayIndex = 0;
-	//									matCount++;
-	//									kdset = false;
-	//								}
-	//							}
-	//						}
-	//					}
-	//				}
-	//			}
-	//			break;
+										}
+									}
+									
+									if (!alreadyLoaded)
+									{
+										CreateTexture(fileNamePath);
+									}
+								}
+							}
+						}
 
-	//		default:
-	//			break;
-	//		}
-	//	}
-	//}
-	//else 
-	//{
-	//	std::cout << "Couldnt open mtl file: " << fileName.c_str() << std::endl;
-	//	return false;
-	//}
+						else if (checkChar == 'd') 
+						{
+							//Transparent?? nooooo
+						}
+					}
+				}
+				break;
 
-	//for (int i = 0; i < subSetIndexStart.size(); i++)
-	//{
-	//	bool hasMat = false;
-	//	for (int j = 0; j < material.size(); j++)
-	//	{
-	//		if (meshMaterials[i] == material[j].matName)
-	//		{
-	//			subsetMaterialArray.push_back(j);
-	//			hasMat = true;
-	//		}
-	//	}
-	//	if (!hasMat) 
-	//	{
-	//		subsetMaterialArray.push_back(0);
-	//	}
-	//}
+			case 'n':
+				checkChar = fileIn.get();
+
+				if (checkChar == 'e')
+				{
+					checkChar = fileIn.get();
+					if (checkChar == 'w')
+					{
+						checkChar = fileIn.get();
+						if (checkChar == 'm')
+						{
+							checkChar = fileIn.get();
+							if (checkChar == 't')
+							{
+								checkChar = fileIn.get();
+								if (checkChar == 'l')
+								{
+									checkChar = fileIn.get();
+									if (checkChar == ' ')
+									{
+										SurfaceMaterial tempMat;
+										material.push_back(tempMat);
+										fileIn >> material[matCount].matName;
+										material[matCount].hasTexture = false;
+										material[matCount].textArrayIndex = 0;
+										matCount++;
+										kdset = false;
+									}
+								}
+							}
+						}
+					}
+				}
+				break;
+
+			default:
+				break;
+			}
+		}
+	}
+	else 
+	{
+		std::wcout << "Couldnt open mtl file: " << fileName.c_str() << std::endl;
+		return false;
+	}
+
+	for (int i = 0; i < subSetIndexStart.size()-1; i++)
+	{
+		bool hasMat = false;
+		for (int j = 0; j < material.size(); j++)
+		{
+			if (meshMaterials[i] == material[j].matName)
+			{
+				subsetMaterialArray.push_back(j);
+				hasMat = true;
+			}
+		}
+		if (!hasMat) 
+		{
+			subsetMaterialArray.push_back(0);
+		}
+	}
 
 	CreateVerticies();
 
@@ -695,3 +701,13 @@ void Model::ComputeNormals()
 		faceUsing = 0;
 	}
 }
+
+void Model::CreateTexture(std::wstring& fileNamePath)
+{
+	//CreateTextureFromFile ect ect
+
+	ID3D11ShaderResourceView* tempMeshSRV;
+	_bstr_t filePath(fileNamePath.c_str());
+	unsigned char* image = stbi_load(filePath, &textureWidth, &textureHeight, &channels, STBI_rgb_alpha);
+}
+
