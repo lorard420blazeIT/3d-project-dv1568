@@ -81,7 +81,7 @@ public:
 	std::vector<unsigned int> &getIndicies() { return this->indices; }
 	std::vector<SimpleVertex> &getVerticies() { return verticies; }
 	int getNrofIndices() const { return this->indices.size(); }
-	int getMeshSubsets() const { return this->subSetcount;  }
+	int getSubSetCount() const { return this->subSetcount;  }
 	std::vector<int> getSubsetsIndexStart() const { return this->subSetIndexStart; }
 
 

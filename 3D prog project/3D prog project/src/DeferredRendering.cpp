@@ -449,6 +449,19 @@ bool DeferredRendering::ObjCreateBuffers()
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = &this->object.getIndicies()[0];
 
+	//for (int i = 0; i < object.getIndicies().size(); i++)
+	//{
+	//	std::cout << (this->object.getIndicies()[i]+1) << " ";
+
+	//	if (i % 3 == 0)
+	//	{
+	//		std::cout << std::endl;
+	//	}
+	//}
+	//std::cout << std::endl;
+
+	//std::cout << "indiceis size: "<<object.getIndicies().size() << std::endl;
+
 	HRESULT hrI = this->device->CreateBuffer(&indexBufferDesc, &iinitData, &this->cubeIndexBuffer);
 
 	if (FAILED(hrI))
@@ -494,7 +507,7 @@ void DeferredRendering::RenderObj(cbFrameObj* cbPerObj, Camera& cam)
 
 		this->immediateConxtex->IASetIndexBuffer(this->cubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 		this->immediateConxtex->IASetVertexBuffers(0, 1, &this->cubeVertexBuffer, &this->stride, &this->offset);
-		//immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		//this->immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		this->translate = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 		this->scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
