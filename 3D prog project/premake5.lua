@@ -30,3 +30,12 @@ workspace "3D prog project"
             links{"DirectXTK"}
             defines{"NDEBUG", "_UNICODE", "UNICODE"}
             optimize "On"
+
+	files(src.."*hlsl")
+	shadermodel("5.0")
+
+	filter("files:VertexShader.hlsl")
+	shadertype("Vertex")
+
+	filter("files:PixelShader.hlsl")
+	shadertype("Pixel")
