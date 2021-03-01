@@ -39,7 +39,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 				{
 					float vz, vy, vx;
 					fileIn >> vx >> vy >> vz;
-					std::cout << "v " << vx << " " << vy << " " << vz << std::endl;
+					//std::cout << "v " << vx << " " << vy << " " << vz << std::endl;
 
 					if (isRHCoordSys)
 					{
@@ -55,7 +55,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 				{
 					float vtcu, vtcv;
 					fileIn >> vtcu >> vtcv;
-					std::cout << "vt " << vtcu << " " << vtcv << std::endl;
+					//std::cout << "vt " << vtcu << " " << vtcv << std::endl;
 
 					if (isRHCoordSys)
 					{
@@ -72,7 +72,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 				{
 					float vnx, vny, vnz;
 					fileIn >> vnx >> vny >> vnz;
-					std::cout << "vn " << vnx << " " << vny << " " << vnz << std::endl;
+					//std::cout << "vn " << vnx << " " << vny << " " << vnz << std::endl;
 
 
 					if (isRHCoordSys)
@@ -92,7 +92,6 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 				if (this->checkChar == ' ')
 				{
 					this->subSetIndexStart.push_back(vIndex);
-					this->subSetIndexStart.push_back(vIndex);
 					this->subSetcount++;
 				}
 				break;
@@ -111,6 +110,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 					while (this->checkChar != '\n')
 					{
 						this->face += this->checkChar;
+						//std::wcout << checkChar;
 						this->checkChar = fileIn.get();
 						if (this->checkChar == ' ')
 						{
@@ -123,7 +123,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 						this->triangleCount--;
 					}
 
-					this->triangleCount -= 1;
+					//this->triangleCount -= 1;
 
 					std::wstringstream ss(this->face);
 
@@ -598,7 +598,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 		return false;
 	}
 
-	for (int i = 0; i < subSetIndexStart.size()-1; i++)
+	for (int i = 0; i < subSetcount; i++)
 	{
 		bool hasMat = false;
 		for (int j = 0; j < material.size(); j++)
@@ -627,9 +627,9 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 void Model::CreateVerticies()
 {
-	std::cout << "totalt Verticies: " << this->totalVerts << std::endl;
-	std::cout << "totalt triangles: " << this->triangleCount << std::endl;
-	std::cout << "totalt meshtriangles: " << this->meshTriangles << std::endl;
+	//std::cout << "totalt Verticies: " << this->totalVerts << std::endl;
+	//std::cout << "totalt triangles: " << this->triangleCount << std::endl;
+	//std::cout << "totalt meshtriangles: " << this->meshTriangles << std::endl;
 
 	//std::cout << "totalt triangles: " << vertNorm[0].x << std::endl;
 	

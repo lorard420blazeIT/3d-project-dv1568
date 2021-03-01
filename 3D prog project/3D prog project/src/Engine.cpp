@@ -38,7 +38,7 @@ bool Engine::SetUp()
 		return false;
 	}
 
-	if (!object.LoadOBJ(L"../3D Models/testCube.obj", true, true))
+	if (!object.LoadOBJ(L"../3D Models/pika.obj", true, false))
 	{
 		std::cerr << "Failed to load OBJ " << std::endl;
 		return false;
