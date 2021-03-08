@@ -57,7 +57,7 @@ ALIGN16
 struct cbFrameLight
 {
 	dx::XMFLOAT3 pos;
-	float pad1;
+	float pad1;;
 
 	dx::XMFLOAT3 ambient;
 	float pad2;
@@ -69,9 +69,12 @@ struct cbFrameLight
 	float pad4;
 
 	float specPower;
-	dx::XMFLOAT3 pad5;
+	float attConst;
+	float attLin;
+	float attQuad;
 };
 
+ALIGN16
 struct SurfaceMaterial 
 {
 	std::wstring matName;

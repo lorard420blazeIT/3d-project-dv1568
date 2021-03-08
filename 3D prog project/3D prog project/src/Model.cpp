@@ -59,11 +59,11 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 
 					if (isRHCoordSys)
 					{
-						this->vertTextCoord.push_back(dx::XMFLOAT2(vtcu, 1.0f - vtcv));
+						this->vertTextCoord.push_back(dx::XMFLOAT2(vtcu, vtcv));
 					}
 					else
 					{
-						this->vertTextCoord.push_back(dx::XMFLOAT2(vtcu, vtcv));
+						this->vertTextCoord.push_back(dx::XMFLOAT2(vtcu, 1.0f - vtcv));
 					}
 					this->hasTexCoord = true;
 				}

@@ -12,9 +12,12 @@ Engine::Engine(HINSTANCE& hinstance, HINSTANCE& hPrevIntance, LPWSTR& lpmCmdLine
 
 	//Light stuff
 	lightFrame.ambient = { 0.3f, 0.3f, 0.3f };
-	lightFrame.pos = { 0, 0, -3 };
+	lightFrame.pos = { 0, 0, -4 };
 	lightFrame.color = { 1, 1, 1 };
 	lightFrame.specPower = 128.0f;
+	lightFrame.attConst = 0.f;
+	lightFrame.attLin = 0.2f;
+	lightFrame.attQuad = 0.0f;
 
 	textureFilePath = "../Texture/this-is-fine-Charlie.png";
 }
@@ -37,7 +40,7 @@ bool Engine::SetUp()
 		std::cerr << "Failed to create D3D11!" << std::endl;
 		return false;
 	}
-	if (!object.LoadOBJ(L"../3D Models/testCube.obj", false, false))
+	if (!object.LoadOBJ(L"../3D Models/Flowie.obj", false, false))
 	{
 		std::cerr << "Failed to load OBJ " << std::endl;
 		return false;
