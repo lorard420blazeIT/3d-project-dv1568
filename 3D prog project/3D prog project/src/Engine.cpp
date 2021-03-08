@@ -37,7 +37,12 @@ bool Engine::SetUp()
 		std::cerr << "Failed to create D3D11!" << std::endl;
 		return false;
 	}
+<<<<<<< Updated upstream
 	if (!object.LoadOBJ(L"../3D Models/testCube.obj", false, false))
+=======
+
+	if (!object.LoadOBJ(L"../3D Models/testCube.obj", true, false))
+>>>>>>> Stashed changes
 	{
 		std::cerr << "Failed to load OBJ " << std::endl;
 		return false;
