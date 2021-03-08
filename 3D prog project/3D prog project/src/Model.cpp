@@ -110,6 +110,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 					while (this->checkChar != '\n')
 					{
 						this->face += this->checkChar;
+
 						//std::wcout << checkChar;
 						this->checkChar = fileIn.get();
 						if (this->checkChar == ' ')
@@ -118,12 +119,12 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 						}
 					}
 
-					if (this->face[face.length() - 1] == ' ')
+					if (this->face[this->face.length() - 1] == ' ')
 					{
 						this->triangleCount--;
 					}
 
-					//this->triangleCount -= 1;
+					this->triangleCount -= 1;
 
 					std::wstringstream ss(this->face);
 
@@ -198,48 +199,17 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 								this->subSetcount++;
 							}
 
-							bool vertAlreadyExsists = false;
+							this->vertPosIndex.push_back(this->vertPosIndexTemp);
+							this->vertTCIndex.push_back(this->vertTCIndexTemp);
+							this->vertNormIndex.push_back(this->vertNormIndexTemp);
 
-							if (this->totalVerts >= 3)
-							{
-								for (int iCheck = 0; iCheck < this->totalVerts; iCheck++)
-								{
-									if (this->vertPosIndexTemp == this->vertPosIndex[iCheck] && !vertAlreadyExsists)
-									{
-										if (this->vertTCIndexTemp == this->vertTCIndex[iCheck])
-										{
-											this->indices.push_back(iCheck);
-											vertAlreadyExsists = true;
-										}
-									}
-								}
-							}
-
-							if (!vertAlreadyExsists)
-							{
-								this->vertPosIndex.push_back(this->vertPosIndexTemp);
-								this->vertTCIndex.push_back(this->vertTCIndexTemp);
-								this->vertNormIndex.push_back(this->vertNormIndexTemp);
-								this->totalVerts++;
-								this->indices.push_back(this->totalVerts - 1);
-							}
-
-							if (i == 0)
-							{
-								firstVIndex = this->indices[this->vIndex];
-							}
-
-							if (i == 2)
-							{
-								lastVIndex = this->indices[this->vIndex];
-							}
-							this->vIndex++;
+							this->totalVerts++;
 						}
 
 						this->meshTriangles++;
 
 						//Triangulate
-						for (int l = 0; l < this->triangleCount - 1; l++)
+						/*for (int l = 0; l < this->triangleCount - 1; l++)
 						{
 							this->indices.push_back(firstVIndex);
 							this->vIndex++;
@@ -337,7 +307,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 							
 							this->meshTriangles++;
 							this->vIndex++;
-						}
+						}*/
 					}
 				}
 				break;
@@ -498,12 +468,11 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 						if (checkChar == '_')
 						{
 							checkChar = fileIn.get();
-							if (checkChar == 'k')
+							if (checkChar == 'K')
 							{
 								checkChar = fileIn.get();
 								if (checkChar == 'd')
 								{
-									std::wstring fileNamePath;
 
 									fileIn.get();
 
@@ -511,42 +480,41 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 									while (!textFilePathEnd)
 									{
 										checkChar = fileIn.get();
-										fileNamePath += checkChar;
+										texturePath += checkChar;
 
 										if (checkChar == '.')
 										{
 											for (int i = 0; i < 3; i++)
 											{
-												fileNamePath += fileIn.get();
+												texturePath += fileIn.get();
 											}
 
 											textFilePathEnd = true;
 										}
 									}
+									texturePath = L"../3D Models/" + texturePath;
+									std::wcout << "model texure: " << texturePath << std::endl;
 
-									bool alreadyLoaded = false;
-									for (int i = 0; i < textureNameArray.size(); i++)
-									{
-										if (fileNamePath == textureNameArray[i])
-										{
-											alreadyLoaded = true;
-											material[matCount - 1].textArrayIndex = i;
-											material[matCount - 1].hasTexture = true;
 
-										}
-									}
-									
-									if (!alreadyLoaded)
-									{
-										CreateTexture(fileNamePath);
-									}
+									//bool alreadyLoaded = false;
+									//for (int i = 0; i < textureNameArray.size(); i++)
+									//{
+									//	if (texturePath == textureNameArray[i])
+									//	{
+									//		alreadyLoaded = true;
+									//		material[matCount - 1].textArrayIndex = i;
+									//		material[matCount - 1].hasTexture = true;
+
+									//	}
+									//}
+									//
+									//if (!alreadyLoaded)
+									//{
+									//CreateTexture(texturePath);
+									//	textureNameArray.push_back(texturePath.c_str());
+									//}
 								}
 							}
-						}
-
-						else if (checkChar == 'd') 
-						{
-							//Transparent?? nooooo
 						}
 					}
 				}
@@ -615,12 +583,17 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 		}
 	}
 
+
+	std::wcout << face.c_str() << std::endl;
+
 	CreateVerticies();
 
 	if (computeNormals)
 	{
 		ComputeNormals();
 	}
+
+	std::cout << "triangle Count: "<<triangleCount << std::endl;
 
 	return true;
 }
@@ -633,17 +606,18 @@ void Model::CreateVerticies()
 
 	//std::cout << "totalt triangles: " << vertNorm[0].x << std::endl;
 	
-	SimpleVertex tempvert;
+	// pos/uv/norm
 
+	SimpleVertex tempvert;
 	for (int i = 0; i < this->totalVerts; i++)
 	{
+
 		tempvert.pos = this->vertPos[vertPosIndex[i]];
-		tempvert.norm = this->vertNorm[vertNormIndex[i]];
 		tempvert.uv = this->vertTextCoord[vertTCIndex[i]];
+		tempvert.norm = this->vertNorm[vertNormIndex[i]];
 		tempvert.clr = dx::XMFLOAT3(0, 0, 1);
 		this->verticies.push_back(tempvert);
 	}
-
 }
 
 void Model::ComputeNormals()

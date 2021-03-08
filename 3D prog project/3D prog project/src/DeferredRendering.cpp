@@ -10,13 +10,12 @@ DeferredRendering::~DeferredRendering()
 {
 }
 
-void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, std::string filePath, Model &obj)
+void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Model &obj)
 {
 	this->device = device;
 	this->immediateConxtex = immadeiateContect;
 	this->rtv = rtv;
 	this->viewport = viewport;
-	this->filePath = filePath;
 	this->dsView = dsView;
 	this->object = obj;
 }
@@ -197,7 +196,7 @@ bool DeferredRendering::CreateCbLight()
 	return !FAILED(hr);
 }
 
-bool DeferredRendering::CreateTexture()
+bool DeferredRendering::CreateTexture(std::string filePath, ID3D11ShaderResourceView*& textureSRV)
 {
 	int textureWidth = 0;
 	int textureHeight = 0;
@@ -205,37 +204,21 @@ bool DeferredRendering::CreateTexture()
 
 	//Check if file exist
 	std::ifstream ifile;
-	ifile.open(this->filePath);
+	ifile.open(filePath);
 	if (ifile)
 	{
-		std::cout << "Texture file exists" << std::endl;
+		std::cout << "Texture file exists: " << filePath << std::endl;
 	}
 	else
 	{
-		std::cout << "Texture file doesn't exist" << std::endl;
+		std::cout << "Texture file doesn't exist: " << filePath << std::endl;
 	}
 
-	unsigned char* image = stbi_load(this->filePath.c_str(), &textureWidth, &textureHeight, &channels, STBI_rgb_alpha);
+	unsigned char* image = stbi_load(filePath.c_str(), &textureWidth, &textureHeight, &channels, STBI_rgb_alpha);
 
 
 	std::vector<unsigned char> textureData;
 	textureData.resize(textureWidth * textureHeight * 4);
-
-	for (int h = 0; h < textureHeight; h++)
-	{
-		for (int w = 0; w < textureWidth; w++)
-		{
-			unsigned char r = w < textureWidth / 3 ? 255 : 0;
-			unsigned char g = w >= textureWidth / 3 && w <= textureWidth / 1.5 ? 255 : 0;
-			unsigned char b = w > textureWidth / 1.5 ? 255 : 0;
-			unsigned int pos0 = w * 4 + textureWidth * 4 * h;
-
-			textureData[pos0 + 0] = r;
-			textureData[pos0 + 1] = g;
-			textureData[pos0 + 2] = b;
-			textureData[pos0 + 3] = 255;
-		}
-	}
 
 	D3D11_TEXTURE2D_DESC desc;
 	desc.Width = textureWidth;
@@ -261,7 +244,7 @@ bool DeferredRendering::CreateTexture()
 		return false;
 	}
 
-	HRESULT hr = this->device->CreateShaderResourceView(this->texture, nullptr, &this->textureSRV);
+	HRESULT hr = this->device->CreateShaderResourceView(this->texture, nullptr, &textureSRV);
 	stbi_image_free(image);
 	return !FAILED(hr);
 }
@@ -321,16 +304,25 @@ bool DeferredRendering::SetupPipeline()
 		return false;
 	}
 
-	if (!CreateTexture())
+	//Create charlie texture
+	if (!CreateTexture(filePathCharlie, textureSRVCharlie))
 	{
 		std::cerr << "Error creating texture!" << std::endl;
 		return false;
 	}
+	//Create obj texture
+	if (!CreateTexture(object.getTexturePath(), textureSRVObj))
+	{
+		std::cerr << "Error creating texture!" << std::endl;
+		return false;
+	}
+
 	if (!CreateSamplerState())
 	{
 		std::cerr << "Error creating sampler state!" << std::endl;
 		return false;
 	}
+	RenderState();
 
 	return true;
 }
@@ -352,9 +344,10 @@ void DeferredRendering::Render(cbFrameObj* cbPerObj)
 	this->immediateConxtex->VSSetShader(this->vShader, nullptr, 0);
 	this->immediateConxtex->RSSetViewports(1, &this->viewport);
 	this->immediateConxtex->PSSetShader(this->pShader, nullptr, 0);
-	this->immediateConxtex->PSSetShaderResources(0, 1, &this->textureSRV);
+	this->immediateConxtex->PSSetShaderResources(0, 1, &this->textureSRVCharlie);
 	this->immediateConxtex->PSSetSamplers(0, 1, &this->sampler);
 	this->immediateConxtex->OMSetRenderTargets(1, &this->rtv, this->dsView);
+	this->immediateConxtex->RSSetState(renderState);
 
 	this->immediateConxtex->DrawIndexed(12, 0, 0);
 
@@ -370,7 +363,7 @@ void DeferredRendering::Render(cbFrameObj* cbPerObj)
 	cbPerObj->world = saveMe;
 
 	this->immediateConxtex->UpdateSubresource(this->constantBufferObj, 0, nullptr, cbPerObj, 0, 0);
-	this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
+	//this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
 	this->immediateConxtex->DrawIndexed(12, 0, 0);
 
 }
@@ -407,7 +400,8 @@ void DeferredRendering::Update(cbFrameObj* cbPerObj, float& rot, cbFrameLight* l
 void DeferredRendering::Release()
 {
 	this->inputLayout->Release();
-	this->textureSRV->Release();
+	this->textureSRVCharlie->Release();
+	this->textureSRVObj->Release();
 	this->sampler->Release();
 	this->vShader->Release();
 	this->pShader->Release();
@@ -436,40 +430,6 @@ bool DeferredRendering::CreateCubeSamplerState()
 
 bool DeferredRendering::ObjCreateBuffers()
 {
-	//Create indexBuffer
-	D3D11_BUFFER_DESC indexBufferDesc = { 0 };
-	ZeroMemory(&indexBufferDesc, sizeof(indexBufferDesc));
-
-	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	indexBufferDesc.ByteWidth = sizeof(DWORD) * this->object.getMeshTriangles() * 3;
-	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	indexBufferDesc.CPUAccessFlags = 0;
-	indexBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA iinitData;
-	iinitData.pSysMem = &this->object.getIndicies()[0];
-
-	//for (int i = 0; i < object.getIndicies().size(); i++)
-	//{
-	//	std::cout << (this->object.getIndicies()[i]+1) << " ";
-
-	//	if (i % 3 == 0)
-	//	{
-	//		std::cout << std::endl;
-	//	}
-	//}
-	//std::cout << std::endl;
-
-	//std::cout << "indiceis size: "<<object.getIndicies().size() << std::endl;
-
-	HRESULT hrI = this->device->CreateBuffer(&indexBufferDesc, &iinitData, &this->cubeIndexBuffer);
-
-	if (FAILED(hrI))
-	{
-		std::cerr << "Couldnt create CubeIndexBuffer" << std::endl;
-		return false;
-	}
-
 	//Create Vertexbuffer
 	D3D11_BUFFER_DESC vertexBufferDesc = { 0 };
 	ZeroMemory(&vertexBufferDesc, sizeof(vertexBufferDesc));
@@ -497,17 +457,22 @@ bool DeferredRendering::ObjCreateBuffers()
 	return true;
 }
 
+void DeferredRendering::RenderState()
+{
+	D3D11_RASTERIZER_DESC desc;
+	ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
+	//desc.FillMode = D3D11_FILL_WIREFRAME;
+	//desc.CullMode = D3D11_CULL_NONE;
+
+	device->CreateRasterizerState(&desc, &renderState);
+}
+
 void DeferredRendering::RenderObj(cbFrameObj* cbPerObj, Camera& cam)
 {
-	//std::cout << object.getMeshSubsets() << std::endl;
-
-	//for (int i = 0; i < object.getMeshSubsets(); ++i)
-	//{
-		//std::cout << "in for loop" << std::endl;
-
-		this->immediateConxtex->IASetIndexBuffer(this->cubeIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	/*for (int i = 0; i < object.getSubSetCount(); ++i)
+	{*/
 		this->immediateConxtex->IASetVertexBuffers(0, 1, &this->cubeVertexBuffer, &this->stride, &this->offset);
-		//this->immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		this->immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 		this->translate = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
 		this->scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
@@ -527,11 +492,12 @@ void DeferredRendering::RenderObj(cbFrameObj* cbPerObj, Camera& cam)
 		this->immediateConxtex->UpdateSubresource(this->constantBufferObj, 0, nullptr, cbPerObj, 0, 0);
 		this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
 		this->immediateConxtex->PSSetConstantBuffers(1, 1, &this->constantBufferObj);
-		this->immediateConxtex->PSSetShaderResources(0, 1, &this->textureSRV);
-		this->immediateConxtex->PSSetSamplers(0, 1, &this->sampler);
+		this->immediateConxtex->PSSetShaderResources(0, 1, &textureSRVObj);
+		this->immediateConxtex->PSSetSamplers(0, 1, &this->CubesTextSamplerState);
 
-		int indexStart = this->object.getSubsetsIndexStart()[0];
-		int indexDrawAmunt = this->object.getSubsetsIndexStart()[0 + 1] - this->object.getSubsetsIndexStart()[0];
-		this->immediateConxtex->DrawIndexed(indexDrawAmunt, 0, 0);
+		//int indexStart = this->object.getSubsetsIndexStart()[i];
+		//int indexDrawAmunt = this->object.getSubsetsIndexStart()[i + 1] - this->object.getSubsetsIndexStart()[i];
+		//this->immediateConxtex->DrawIndexed(indexDrawAmunt, indexStart, 0);
+		this->immediateConxtex->Draw(object.getTotaltVerts(), 0);
 	//}
 }

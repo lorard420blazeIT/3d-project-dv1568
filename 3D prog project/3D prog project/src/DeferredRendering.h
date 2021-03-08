@@ -14,22 +14,25 @@ namespace dx = DirectX;
 class DeferredRendering
 {
 private:
-	
 	ID3D11Device* device;
 	ID3D11DeviceContext* immediateConxtex;
 	ID3D11RenderTargetView* rtv;
 	ID3D11DepthStencilView* dsView;
 	ID3D11InputLayout* inputLayout;
-	ID3D11ShaderResourceView* textureSRV;
 	ID3D11SamplerState* sampler;
 	ID3D11SamplerState* CubesTextSamplerState;
+	ID3D11RasterizerState* renderState;
 
 	D3D11_VIEWPORT viewport;
 	ID3D11VertexShader* vShader;
 	ID3D11PixelShader* pShader;
 	std::string vShaderByteCode;
+
+	ID3D11ShaderResourceView* textureSRVCharlie;
 	ID3D11Texture2D* texture;
-	std::string filePath;
+	std::string filePathCharlie = "../Texture/this-is-fine-Charlie.png";
+
+	ID3D11ShaderResourceView* textureSRVObj;
 
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
@@ -55,17 +58,19 @@ private:
 	Model object;
 	//Camera cam;
 
+	constantBufferMatrixes test;
+
 public:
 	DeferredRendering();
 	~DeferredRendering();
-	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView *&rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, std::string filePath, Model& obj);
+	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView *&rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Model& obj);
 	bool LoadShaders();
 	bool CreateInputLayout();
 	bool CreateVertexBuffer();
 	bool CreateIndexBuffer();
 	bool CreateCbPerObj();
 	bool CreateCbLight();
-	bool CreateTexture();
+	bool CreateTexture(std::string filepath, ID3D11ShaderResourceView*& textureSRV);
 	bool CreateSamplerState();
 	bool SetupPipeline();
 	void position();
@@ -74,5 +79,6 @@ public:
 	bool ObjCreateBuffers();
 	void RenderObj(cbFrameObj* cbPerObj, Camera& cam);
 	bool CreateCubeSamplerState();
+	void RenderState();
 	void Release();
 };

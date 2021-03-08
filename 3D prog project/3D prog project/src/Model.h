@@ -68,6 +68,8 @@ private:
 	int textureWidth = 0;
 	int textureHeight = 0;
 	int channels = sizeof(textureWidth);
+	std::wstring texturePath;
+
 
 public:
 	Model();
@@ -79,11 +81,14 @@ public:
 	int getMeshTriangles() const { return this->meshTriangles; }
 	int getTotaltVerts() const { return this->totalVerts; }
 	std::vector<unsigned int> &getIndicies() { return this->indices; }
-	std::vector<SimpleVertex> &getVerticies() { return verticies; }
+	std::vector<SimpleVertex> &getVerticies() { return this->verticies; }
 	int getNrofIndices() const { return this->indices.size(); }
 	int getSubSetCount() const { return this->subSetcount;  }
 	std::vector<int> getSubsetsIndexStart() const { return this->subSetIndexStart; }
+	std::vector<SurfaceMaterial>& getMaterials() { return this->material; }
+	std::string getTexturePath() { _bstr_t filePath(texturePath.c_str()); return filePath; }
+};
 
+struct constantBufferMatrixes {
 
-	//std::vector<int> GetMeshSubsetIndexStart() const { return meshSubsetIndexStart; }
 };

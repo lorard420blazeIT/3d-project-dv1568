@@ -37,14 +37,13 @@ bool Engine::SetUp()
 		std::cerr << "Failed to create D3D11!" << std::endl;
 		return false;
 	}
-
-	if (!object.LoadOBJ(L"../3D Models/pika.obj", true, false))
+	if (!object.LoadOBJ(L"../3D Models/testCube.obj", false, false))
 	{
 		std::cerr << "Failed to load OBJ " << std::endl;
 		return false;
 	}
 
-	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, textureFilePath, object);
+	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, object);
 
 	if (!defRender.ObjCreateBuffers())
 	{
