@@ -457,7 +457,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 				}
 				break;
 
-			case 'm':
+			case 'm':	//Texture
 				checkChar = fileIn.get();
 				if (checkChar == 'a')
 				{
@@ -495,7 +495,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 									texturePath = L"../3D Models/" + texturePath;
 									std::wcout << "model texure: " << texturePath << std::endl;
 
-
+									//Texture laoding
 									//bool alreadyLoaded = false;
 									//for (int i = 0; i < textureNameArray.size(); i++)
 									//{
@@ -566,6 +566,7 @@ bool  Model::LoadOBJ(std::wstring fileName, bool isRHCoordSys, bool computeNorma
 		return false;
 	}
 
+	//For when obj contrains mutiple models with different materials
 	for (int i = 0; i < subSetcount; i++)
 	{
 		bool hasMat = false;
@@ -676,12 +677,4 @@ void Model::ComputeNormals()
 	}
 }
 
-void Model::CreateTexture(std::wstring& fileNamePath)
-{
-	//CreateTextureFromFile ect ect
-
-	ID3D11ShaderResourceView* tempMeshSRV;
-	_bstr_t filePath(fileNamePath.c_str());
-	unsigned char* image = stbi_load(filePath, &textureWidth, &textureHeight, &channels, STBI_rgb_alpha);
-}
 

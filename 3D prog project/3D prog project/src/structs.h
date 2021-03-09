@@ -39,8 +39,9 @@ struct  SimpleVertex
 ALIGN16 ////Saftey guard att man inte får fler på allginment, avslutar structen på 16 så nästa kan räknas in rätt
 struct cbFrameObj//Använder XMFloat4x4 för XMMatrix lätt blir messy med minnes fel ect
 {
-	dx::XMFLOAT4X4 wvp;//Perform offsett and rotation 4 bits per
-	dx::XMFLOAT4X4 world;
+	dx::XMFLOAT4X4 world;//Perform offsett and rotation 4 bits per
+	dx::XMFLOAT4X4 view;
+	dx::XMFLOAT4X4 projection;
 
 	//Pixel shader obj loader tutorial
 	dx::XMFLOAT4 difColor;

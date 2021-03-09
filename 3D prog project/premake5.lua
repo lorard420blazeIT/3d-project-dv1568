@@ -39,3 +39,11 @@ workspace "3D prog project"
 
 	filter("files:PixelShader.hlsl")
 	shadertype("Pixel")
+
+	filter("files:LightVertexShader.hlsl")
+	shadertype("Vertex")
+
+	filter("files:LightPixelShader.hlsl")
+	shadertype("Pixel")
+
+

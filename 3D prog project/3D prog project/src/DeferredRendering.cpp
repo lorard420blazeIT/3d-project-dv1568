@@ -363,10 +363,7 @@ void DeferredRendering::Render(cbFrameObj* cbPerObj)
 
 	this->world = this->scale * this->translate * this->rotate;
 
-	dx::XMMATRIX wvp = this->world * this->view * this->perspectiveProjection;
 	dx::XMFLOAT4X4 saveMe;
-	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(wvp));
-	cbPerObj->wvp = saveMe;
 	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(world));
 	cbPerObj->world = saveMe;
 
@@ -388,12 +385,14 @@ void DeferredRendering::Update(cbFrameObj* cbPerObj, float& rot, cbFrameLight* l
 	this->view = dx::XMLoadFloat4x4(&cam.getView());
 	this->perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
 
-	dx::XMMATRIX wvp = this->world * this->view * this->perspectiveProjection;
 	dx::XMFLOAT4X4 saveMe;
-	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(wvp));
-	cbPerObj->wvp = saveMe;
+
 	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(world));
 	cbPerObj->world = saveMe;
+	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(view));
+	cbPerObj->view = saveMe;
+	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(perspectiveProjection));
+	cbPerObj->projection = saveMe;
 
 	this->immediateConxtex->UpdateSubresource(this->constantBufferObj, 0, nullptr, cbPerObj, 0, 0);
 	this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
@@ -479,10 +478,8 @@ void DeferredRendering::RenderObj(cbFrameObj* cbPerObj, Camera& cam)
 		this->view = dx::XMLoadFloat4x4(&cam.getView());
 		this->perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
 
-		dx::XMMATRIX wvp = this->worldCube * this->view * this->perspectiveProjection;
 		dx::XMFLOAT4X4 saveMe;
-		dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(wvp));
-		cbPerObj->wvp = saveMe;
+		
 		dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(worldCube));
 		cbPerObj->world = saveMe;
 
