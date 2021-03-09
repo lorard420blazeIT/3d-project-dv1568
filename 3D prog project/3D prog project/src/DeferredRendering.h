@@ -79,6 +79,5 @@ public:
 	bool ObjCreateBuffers();
 	void RenderObj(cbFrameObj* cbPerObj, Camera& cam);
 	bool CreateCubeSamplerState();
-	void RenderState();
 	void Release();
 };

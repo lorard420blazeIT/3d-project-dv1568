@@ -101,24 +101,34 @@ bool DeferredRendering::CreateVertexBuffer()
 {
 	SimpleVertex quad[] =
 	{
-		//A
-		{ {-0.5f, 0.5f, 0.0f},  {0.0f, 0.0f},  {0.0f, 0.0f, -1.0f},	 {0, 0, 1} },
+		//F1
+		//POSITION					UV			COLOR		NORMAL
+		{ {-0.5f, 0.5f, 0.0f},  {0.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
 
-		//B
-		{ {0.5f, 0.5f, 0.0f},   {1.0f, 0.0f},  {0.0f, 0.0f, -1.0f},  {0, 0, 1} },
+		{ {0.5f, 0.5f, 0.0f},   {1.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
 
-		//E
-		{ {-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f},  {0.0f, 0.0f, -1.0f},  {0, 0, 1} },
+		{ {-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
 
-		//C
-		{ {0.5f, -0.5f, 0.0f},  {1.0f, 1.0f},  {0.0f, 0.0f, -1.0f},  {0, 0, 1} },
+		//F2
+		{ {-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
 
-		//D
-		{ {-0.5f, 0.5f, 0.0f},  {0.0f, 0.0f},  {0.0f, 0.0f, -1.0f},  {0, 0, 1} },
+		{ {0.5f, 0.5f, 0.0f},   {1.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
 
-		//F (B2)
-		{ {0.5f, 0.5f, 0.0f},  {1.0f, 0.0f},   {0.0f, 0.0f, -1.0f},  {0, 0, 1} }
+		{ {0.5f, -0.5f, 0.0f},  {1.0f, 1.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
 
+		//B1
+		{ {-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f},  {0, 0, 1},  {0.0f, 0.0f, 1.0f} },
+
+		{ {0.5f, 0.5f, 0.0f},   {1.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, 1.0f} },
+
+		{ {-0.5f, 0.5f, 0.0f},  {0.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, 1.0f} },
+
+		//B2
+		{ {0.5f, 0.5f, 0.0f},   {1.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, 1.0f} },
+
+		{ {-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f},  {0, 0, 1},  {0.0f, 0.0f, 1.0f} },
+
+		{ {0.5f, -0.5f, 0.0f},  {1.0f, 1.0f},  {0, 0, 1},  {0.0f, 0.0f, 1.0f} }
 	};
 
 	D3D11_BUFFER_DESC bufferDesc = { 0 }; //Deaufalt alla v�rden till 0;
@@ -322,7 +332,6 @@ bool DeferredRendering::SetupPipeline()
 		std::cerr << "Error creating sampler state!" << std::endl;
 		return false;
 	}
-	RenderState();
 
 	return true;
 }
@@ -340,14 +349,13 @@ void DeferredRendering::Render(cbFrameObj* cbPerObj)
 	this->immediateConxtex->IASetIndexBuffer(this->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 	this->immediateConxtex->IASetVertexBuffers(0, 1, &this->vertexBuffer, &stride, &offset);
 	this->immediateConxtex->IASetInputLayout(this->inputLayout);
-	this->immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	this->immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	this->immediateConxtex->VSSetShader(this->vShader, nullptr, 0);
 	this->immediateConxtex->RSSetViewports(1, &this->viewport);
 	this->immediateConxtex->PSSetShader(this->pShader, nullptr, 0);
 	this->immediateConxtex->PSSetShaderResources(0, 1, &this->textureSRVCharlie);
 	this->immediateConxtex->PSSetSamplers(0, 1, &this->sampler);
 	this->immediateConxtex->OMSetRenderTargets(1, &this->rtv, this->dsView);
-	this->immediateConxtex->RSSetState(renderState);
 
 	this->immediateConxtex->DrawIndexed(12, 0, 0);
 
@@ -386,7 +394,6 @@ void DeferredRendering::Update(cbFrameObj* cbPerObj, float& rot, cbFrameLight* l
 	cbPerObj->wvp = saveMe;
 	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(world));
 	cbPerObj->world = saveMe;
-
 
 	this->immediateConxtex->UpdateSubresource(this->constantBufferObj, 0, nullptr, cbPerObj, 0, 0);
 	this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
@@ -455,16 +462,6 @@ bool DeferredRendering::ObjCreateBuffers()
 	}
 
 	return true;
-}
-
-void DeferredRendering::RenderState()
-{
-	D3D11_RASTERIZER_DESC desc;
-	ZeroMemory(&desc, sizeof(D3D11_RASTERIZER_DESC));
-	//desc.FillMode = D3D11_FILL_WIREFRAME;
-	//desc.CullMode = D3D11_CULL_NONE;
-
-	device->CreateRasterizerState(&desc, &renderState);
 }
 
 void DeferredRendering::RenderObj(cbFrameObj* cbPerObj, Camera& cam)
