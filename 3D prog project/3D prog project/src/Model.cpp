@@ -616,7 +616,6 @@ void Model::CreateVerticies()
 		tempvert.pos = this->vertPos[vertPosIndex[i]];
 		tempvert.uv = this->vertTextCoord[vertTCIndex[i]];
 		tempvert.norm = this->vertNorm[vertNormIndex[i]];
-		tempvert.clr = dx::XMFLOAT3(0, 0, 1);
 		this->verticies.push_back(tempvert);
 	}
 }
@@ -633,7 +632,8 @@ void Model::ComputeNormals()
 	//Computing face Normals
 	for (int i = 0; i < this->meshTriangles; i++)
 	{
-		vecX = this->verticies[this->indices[(i * 3)]].pos.x - this->verticies[this->indices[(i * 3) + 2]].pos.x;
+		vecX = this->verticies
+			[this->indices[(i * 3)]].pos.x - this->verticies[this->indices[(i * 3) + 2]].pos.x;
 		vecY = this->verticies[this->indices[(i * 3)]].pos.y - this->verticies[this->indices[(i * 3) + 2]].pos.y;
 		vecZ = this->verticies[this->indices[(i * 3)]].pos.z - this->verticies[this->indices[(i * 3) + 2]].pos.z;
 		edge1 = dx::XMVectorSet(vecX, vecY, vecZ, 0.0f);
@@ -676,5 +676,3 @@ void Model::ComputeNormals()
 		faceUsing = 0;
 	}
 }
-
-

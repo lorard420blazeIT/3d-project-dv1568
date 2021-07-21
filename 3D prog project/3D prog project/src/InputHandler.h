@@ -2,10 +2,10 @@
 #include <Windows.h>
 #include <iostream>
 #include <string>
-#include "Keyboard.h"
-#include "Mouse.h"
+#include <Keyboard.h>
+#include <Mouse.h>
 #include "Window.h"
-#include "SimpleMath.h"
+#include <SimpleMath.h>
 
 namespace dx = DirectX;
 namespace sm = dx::SimpleMath;

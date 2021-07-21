@@ -17,19 +17,17 @@ struct  SimpleVertex
 	dx::XMFLOAT3 pos;
 	dx::XMFLOAT2 uv;
 	dx::XMFLOAT3 norm;
-	dx::XMFLOAT3 clr;
 	/*float pos[3] = { 0 };
 	float uv[2] = { 0 };
 	float clr[3] = { 0 };
 	float norm[3] = { 0 };*/
 
-	SimpleVertex(const dx::XMFLOAT3 position = { 0,0,0 }, const dx::XMFLOAT2 uvCoords = { 0,0 }, dx::XMFLOAT3 normal = { 0,0,0 }, const dx::XMFLOAT3 color = { 1,0,1 })    //Ask teacher
+	SimpleVertex(const dx::XMFLOAT3 position = { 0,0,0 }, const dx::XMFLOAT2 uvCoords = { 0,0 }, dx::XMFLOAT3 normal = { 0,0,0 })    //Ask teacher
 	{
 		for (int i = 0; i < 3; i++)
 		{
 			pos = position;
 			norm = normal;
-			clr = color;
 		}
 		uv = uvCoords;
 		uv = uvCoords;
@@ -55,7 +53,7 @@ struct cbFrameObj//Använder XMFloat4x4 för XMMatrix lätt blir messy med minnes f
 	//aling all the way 
 };
 ALIGN16
-struct cbFrameLight
+struct Light
 {
 	dx::XMFLOAT3 pos;
 	float pad1;;

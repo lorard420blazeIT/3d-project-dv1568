@@ -31,7 +31,7 @@ private:
 	std::string textureFilePath;
 
 	cbFrameObj frame;
-	cbFrameLight lightFrame;
+	Light lightFrame;
 	InputHandler input;
 	Camera cam;
 	DeferredRendering defRender;

@@ -22,11 +22,20 @@ private:
 	ID3D11SamplerState* sampler;
 	ID3D11SamplerState* CubesTextSamplerState;
 	ID3D11RasterizerState* renderState;
-
 	D3D11_VIEWPORT viewport;
-	ID3D11VertexShader* vShader;
-	ID3D11PixelShader* pShader;
-	std::string vShaderByteCode;
+
+	SimpleVertex screenQuad[4];
+	ID3D11Buffer* vertexBufferQuad;
+	ID3D11Buffer* indexBufferQuad;
+
+	ID3D11VertexShader* deferred_geometry_vs;
+	ID3D11PixelShader* deferred_geometry_ps;
+	ID3D11VertexShader* deferred_light_vs;
+	ID3D11PixelShader* deferred_light_ps;
+	std::string deferred_geometry_vs_bytecode;
+	std::string deferred_light_vs_bytecode;
+	std::string deferred_geometry_ps_bytecode;
+	std::string deferred_light_ps_bytecode;
 
 	ID3D11ShaderResourceView* textureSRVCharlie;
 	ID3D11Texture2D* texture;
@@ -39,9 +48,6 @@ private:
 	ID3D11Buffer* constantBufferObj;
 	ID3D11Buffer* constantBufferLight;
 
-	ID3D11Buffer* cubeVertexBuffer;
-	ID3D11Buffer* cubeIndexBuffer;
-
 	dx::XMMATRIX world = dx::XMMatrixIdentity();
 	dx::XMMATRIX translate = dx::XMMatrixIdentity();
 	dx::XMMATRIX scale = dx::XMMatrixIdentity();
@@ -52,8 +58,7 @@ private:
 	dx::XMMATRIX translateCube = dx::XMMatrixIdentity();
 	dx::XMMATRIX worldCube = dx::XMMatrixIdentity();
 
-	UINT stride = sizeof(SimpleVertex);
-	UINT offset = 0;
+
 
 	Model object;
 	//Camera cam;
@@ -65,17 +70,22 @@ public:
 	~DeferredRendering();
 	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView *&rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Model& obj);
 	bool LoadShaders();
+	bool LoadShaderData(const std::string& filename, std::string& vShaderByteCode);
+
 	bool CreateInputLayout();
-	bool CreateVertexBuffer();
-	bool CreateIndexBuffer();
+	//bool CreateVertexBuffer();
+	//bool CreateIndexBuffer();
 	bool CreateCbPerObj();
 	bool CreateCbLight();
 	bool CreateTexture(std::string filepath, ID3D11ShaderResourceView*& textureSRV);
 	bool CreateSamplerState();
+	bool CreateQuadAndBuffer();
+
 	bool SetupPipeline();
-	void position();
-	void Render(cbFrameObj* cbPerObj);
-	void Update(cbFrameObj* frameBuffer, float& rot, cbFrameLight* lightBuffer, Camera& cam);
+	void RenderGeometryPass(cbFrameObj* cbPerObj);
+	void RenderLightPass();
+
+	void Update(cbFrameObj* frameBuffer, float& rot, Light* lightBuffer, Camera& cam);
 	bool ObjCreateBuffers();
 	void RenderObj(cbFrameObj* cbPerObj, Camera& cam);
 	bool CreateCubeSamplerState();
