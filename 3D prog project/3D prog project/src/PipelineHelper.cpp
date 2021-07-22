@@ -1,9 +1,7 @@
 #include "PipelineHelper.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
-#include <fstream>
-#include <iostream>
-#include <vector>
+
 
 bool LoadShaders(ID3D11Device* device, ID3D11VertexShader*& vShader, ID3D11PixelShader*& pShader, std::string& vShaderByteCode)
 {

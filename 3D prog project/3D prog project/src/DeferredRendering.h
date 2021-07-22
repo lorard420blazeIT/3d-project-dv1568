@@ -1,15 +1,7 @@
 #pragma once
-#include <d3d11.h>
-#include <string>
-#include <DirectXMath.h>
 #include "Camera.h"
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include "structs.h"
+#include "pch.h"
 #include "Model.h"
-
-namespace dx = DirectX;
 
 class DeferredRendering
 {
@@ -57,8 +49,6 @@ private:
 
 	dx::XMMATRIX translateCube = dx::XMMatrixIdentity();
 	dx::XMMATRIX worldCube = dx::XMMatrixIdentity();
-
-
 
 	Model object;
 	//Camera cam;

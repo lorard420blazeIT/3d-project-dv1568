@@ -18,7 +18,6 @@ workspace "3D prog project"
         links{
             "d3d11"
         }
-	vpaths{["Headers"] = "**.h", ["Sources"] = {"**.c", "**.cpp"},["Shaders"] = "**.hlsl"}
         filter "configurations:Debug"
             libdirs{"lib/directXtk/x64/Debug/"}
             links{"DirectXTK"}
@@ -31,11 +30,9 @@ workspace "3D prog project"
             defines{"NDEBUG", "_UNICODE", "UNICODE"}
             optimize "On"
 
-  filter "*"
-        local ws = "$(ProjectDir)%%/src/(Filename).cso"
-        files("*.hlsl")
+
+        filter("files:**.hlsl")
             shadermodel("5.0")
-            shaderobjectfileoutput(ws)
 
         filter("files:**_vs.hlsl")
             shadertype("Vertex")

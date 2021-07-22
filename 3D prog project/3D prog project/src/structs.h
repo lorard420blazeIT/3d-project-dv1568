@@ -1,26 +1,12 @@
 #pragma once
-#define ALIGN16 __declspec(align(16))
-#include <DirectXMath.h>
-namespace dx = DirectX;
-
-#include <array>
-#include <d3d11.h>
-#include <Windows.h>
-#include <WinBase.h>
-#include <stdio.h>
-#include <WinnT.h>
-#include <string>
-#include "Camera.h"
+#include "pch.h"
 
 struct  SimpleVertex
 {
 	dx::XMFLOAT3 pos;
 	dx::XMFLOAT2 uv;
 	dx::XMFLOAT3 norm;
-	/*float pos[3] = { 0 };
-	float uv[2] = { 0 };
-	float clr[3] = { 0 };
-	float norm[3] = { 0 };*/
+
 
 	SimpleVertex(const dx::XMFLOAT3 position = { 0,0,0 }, const dx::XMFLOAT2 uvCoords = { 0,0 }, dx::XMFLOAT3 normal = { 0,0,0 })    //Ask teacher
 	{
@@ -52,6 +38,7 @@ struct cbFrameObj//Använder XMFloat4x4 för XMMatrix lätt blir messy med minnes f
 
 	//aling all the way 
 };
+
 ALIGN16
 struct Light
 {

@@ -1,12 +1,5 @@
 #pragma once
-#include <DirectXMath.h>
-#include <d3d11.h>
-#include <string>
-#include <iostream>
-#include "SimpleMath.h"
-
-namespace dx = DirectX; 
-namespace sm = DirectX::SimpleMath;
+#include "pch.h"
 
 class Camera
 {

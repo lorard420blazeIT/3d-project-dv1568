@@ -1,6 +1,4 @@
 #include "DeferredRendering.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
 
 DeferredRendering::DeferredRendering()
 {
@@ -441,7 +439,6 @@ void DeferredRendering::Release()
 	this->deferred_light_ps->Release();
 	this->texture->Release();
 	this->vertexBuffer->Release();
-	this->indexBuffer->Release();
 	this->constantBufferObj->Release();
 	this->constantBufferLight->Release();
 }
