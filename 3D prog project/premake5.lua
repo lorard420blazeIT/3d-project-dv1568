@@ -31,19 +31,17 @@ workspace "3D prog project"
             defines{"NDEBUG", "_UNICODE", "UNICODE"}
             optimize "On"
 
-	files(src.."*hlsl")
-	shadermodel("5.0")
+  filter "*"
+        local ws = "$(ProjectDir)%%/src/(Filename).cso"
+        files("*.hlsl")
+            shadermodel("5.0")
+            shaderobjectfileoutput(ws)
 
-	filter("files:VertexShader.hlsl")
-	shadertype("Vertex")
+        filter("files:**_vs.hlsl")
+            shadertype("Vertex")
 
-	filter("files:PixelShader.hlsl")
-	shadertype("Pixel")
-
-	filter("files:LightVertexShader.hlsl")
-	shadertype("Vertex")
-
-	filter("files:LightPixelShader.hlsl")
-	shadertype("Pixel")
+        filter("files:**_ps.hlsl")
+            shadertype("Pixel")
+            shadertype("Pixel")
 
 

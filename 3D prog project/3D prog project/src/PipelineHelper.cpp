@@ -86,22 +86,22 @@ bool CreateVertexBuffer(ID3D11Device* device, ID3D11Buffer*& vertexBuffer)
 	SimpleVertex quad[] =
 	{	
 		//A
-		{ {-0.5f, 0.5f, 0.0f},  {0.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
+		{ {-0.5f, 0.5f, 0.0f},  {0.0f, 0.0f},   {0.0f, 0.0f, -1.0f} },
 
 		//B
-		{ {0.5f, 0.5f, 0.0f},   {1.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
+		{ {0.5f, 0.5f, 0.0f},   {1.0f, 0.0f},    {0.0f, 0.0f, -1.0f} },
 
 		//E
-		{ {-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
+		{ {-0.5f, -0.5f, 0.0f}, {0.0f, 1.0f},  {0.0f, 0.0f, -1.0f} },
 
 		//C
-		{ {0.5f, -0.5f, 0.0f},  {1.0f, 1.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
+		{ {0.5f, -0.5f, 0.0f},  {1.0f, 1.0f},    {0.0f, 0.0f, -1.0f} },
 
 		//D
-		{ {-0.5f, 0.5f, 0.0f},  {0.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} },
+		{ {-0.5f, 0.5f, 0.0f},  {0.0f, 0.0f}, {0.0f, 0.0f, -1.0f} },
 
 		//F (B2)
-		{ {0.5f, 0.5f, 0.0f},  {1.0f, 0.0f},  {0, 0, 1},  {0.0f, 0.0f, -1.0f} }
+		{ {0.5f, 0.5f, 0.0f},  {1.0f, 0.0f}, {0.0f, 0.0f, -1.0f} }
 	
 	};
 
@@ -168,8 +168,8 @@ bool CreateCbPerObj(ID3D11Device* device, ID3D11Buffer*& constantBuffer) //Use 1
 bool CreateCbLight(ID3D11Device* device, ID3D11Buffer*& constantBuffer) //Use 1 or 0 instället fö bools. Allt måste alltid va float4 i storlek
 {
 	D3D11_BUFFER_DESC bufferDesc = { 0 };
-	assert(sizeof(cbFrameLight) % 16 == 0);
-	bufferDesc.ByteWidth = sizeof(cbFrameLight);
+	assert(sizeof(Light) % 16 == 0);
+	bufferDesc.ByteWidth = sizeof(Light);
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
@@ -181,7 +181,7 @@ bool CreateCbLight(ID3D11Device* device, ID3D11Buffer*& constantBuffer) //Use 1 
 	return !FAILED(hr);
 }
 
-void UpdateBuffer(ID3D11Buffer*& cbPerObj, ID3D11Buffer*& cbLight, ID3D11DeviceContext* immediateConxtex, cbFrameObj* frameBuffer, float& rot,  cbFrameLight* lightBuffer, Camera &cam)
+void UpdateBuffer(ID3D11Buffer*& cbPerObj, ID3D11Buffer*& cbLight, ID3D11DeviceContext* immediateConxtex, cbFrameObj* frameBuffer, float& rot,  Light* lightBuffer, Camera &cam)
 {
 	//Flags??? -> projekt
 
@@ -203,8 +203,8 @@ void UpdateBuffer(ID3D11Buffer*& cbPerObj, ID3D11Buffer*& cbLight, ID3D11DeviceC
 
 	dx::XMMATRIX wvp = world * view * perspectiveProjection;
 	dx::XMFLOAT4X4 saveMe;
-	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(wvp));
-	frameBuffer->wvp = saveMe;
+	//dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(wvp));
+	//frameBuffer->wvp = saveMe;
 	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(world));
 	frameBuffer->world = saveMe;
 
