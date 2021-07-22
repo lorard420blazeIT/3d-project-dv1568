@@ -18,6 +18,7 @@ private:
 	ID3D11SamplerState* CubesTextSamplerState;
 	ID3D11RasterizerState* renderState;
 	D3D11_VIEWPORT viewport;
+	Window* win;
 
 	SimpleVertex screenQuad[4];
 	ID3D11Buffer* vertexBufferQuad;
@@ -77,6 +78,7 @@ public:
 	bool CreateTexture(std::string filepath, ID3D11ShaderResourceView*& textureSRV);
 	bool CreateSamplerState();
 	bool CreateQuadAndBuffer();
+	bool CreateGraphicsBuffer();
 
 	bool SetupPipeline();
 	void RenderGeometryPass(cbFrameObj* cbPerObj);

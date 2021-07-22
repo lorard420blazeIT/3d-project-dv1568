@@ -97,6 +97,7 @@ void Engine::Update()
 		defRender.Update(&frame, currentRotation, &lightFrame, cam);
 		defRender.RenderGeometryPass(&frame);
 		defRender.RenderObj(&frame, cam);
+		defRender.RenderLightPass();
 
 		swapChain->Present(0, 0);
 	}

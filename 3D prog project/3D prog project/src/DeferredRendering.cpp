@@ -16,6 +16,7 @@ void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& 
 	this->viewport = viewport;
 	this->dsView = dsView;
 	this->object = obj;
+	this->win = win;
 }
 
 bool DeferredRendering::LoadShaders()
@@ -36,13 +37,13 @@ bool DeferredRendering::LoadShaders()
 		std::cerr << "Failed to create  deferred_geometry_ps shader!" << std::endl;
 		return false;
 	}
-	
+
 	if (FAILED(device->CreateVertexShader(deferred_light_vs_bytecode.c_str(), deferred_light_vs_bytecode.length(), nullptr, &deferred_light_vs)))
 	{
 		std::cerr << "Failed to create deferred_light_vs shader!" << std::endl;
 		return false;
 	}
-	
+
 	if (FAILED(device->CreatePixelShader(deferred_light_ps_bytecode.c_str(), deferred_light_ps_bytecode.length(), nullptr, &deferred_light_ps)))
 	{
 		std::cerr << "Failed to create deferred_light_ps shader!" << std::endl;
@@ -61,7 +62,7 @@ bool DeferredRendering::LoadShaderData(const std::string& filename, std::string&
 
 	if (!reader.is_open())
 	{
-		std::cerr << "Could not open " + filename +" shader file!" << std::endl;
+		std::cerr << "Could not open " + filename + " shader file!" << std::endl;
 		return false;
 	}
 
@@ -89,6 +90,97 @@ bool DeferredRendering::CreateInputLayout()
 
 	return !FAILED(hr);
 }
+
+bool DeferredRendering::CreateGraphicsBuffer()
+{
+	HRESULT hr;
+	D3D11_TEXTURE2D_DESC textureDesc;
+	ZeroMemory(&textureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	textureDesc.Width = win->getWidth();
+	textureDesc.Height = win->getHeight();
+	textureDesc.MipLevels = 1;
+	textureDesc.ArraySize = 1;
+	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	textureDesc.SampleDesc.Count = 1;
+	textureDesc.Usage = D3D11_USAGE_DEFAULT;
+	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+
+	for (int i = 0; i < BUFFER_COUNT; i++)
+	{
+		hr = device->CreateTexture2D(&textureDesc, NULL, &graphicsBuffer[i].texture);
+		if (FAILED(hr))
+		{
+			std::cerr << "Failed to create Texture2D for graphicsBuffern" << std::endl;
+			return false;
+		}
+	}
+
+	D3D11_RENDER_TARGET_VIEW_DESC rtvDesc;
+	ZeroMemory(&rtvDesc, sizeof(D3D11_RENDER_TARGET_VIEW_DESC));
+	rtvDesc.Format = textureDesc.Format;
+	rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+
+	for (int i = 0; i < BUFFER_COUNT; i++)
+	{
+		hr = device->CreateRenderTargetView(graphicsBuffer[i].texture.Get(), &rtvDesc, &graphicsBuffer[i].renderTargetView);
+		if (FAILED(hr))
+		{
+			std::cerr << "Failed to create RenderTargetView for graphicsBuffern" << std::endl;
+			return false;
+		}
+	}
+
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroMemory(&srvDesc, sizeof(D3D11_SHADER_RESOURCE_VIEW_DESC));
+	srvDesc.Format = textureDesc.Format;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	for (int i = 0; i < BUFFER_COUNT; i++)
+	{
+		hr = device->CreateShaderResourceView(graphicsBuffer[i].texture.Get(), &srvDesc, &graphicsBuffer[i].shaderResourceView);
+		if (FAILED(hr))
+		{
+			std::cerr << "Failed to create ShaderResourceView for graphicsBuffern" << std::endl;
+			return false;
+		}
+	}
+
+	D3D11_TEXTURE2D_DESC depthBufferDesc;
+	ZeroMemory(&depthBufferDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	depthBufferDesc.Width = textureDesc.Width;
+	depthBufferDesc.Height = textureDesc.Height;
+	depthBufferDesc.MipLevels = 1;
+	depthBufferDesc.ArraySize = 1;
+	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthBufferDesc.SampleDesc.Count = 1;
+	depthBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthBufferDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+
+	hr = device->CreateTexture2D(&depthBufferDesc, NULL, &depthStencilBuffer);
+	if (FAILED(hr))
+	{
+		std::cerr << "Failed to create depthStencilBuffer for graphicsBuffer" << std::endl;
+		return false;
+	}
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(D3D11_DEPTH_STENCIL_VIEW_DESC));
+	depthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	depthStencilDesc.Texture2D.MipSlice = 0;
+
+	hr = device->CreateDepthStencilView(depthStencilBuffer, &depthStencilDesc, &depthStencilView);
+	if (FAILED(hr))
+	{
+		std::cerr << "Failed to create depthStencilView for graphicsBuffer" << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+
 
 //Buffers for quads
 
@@ -290,6 +382,7 @@ bool DeferredRendering::CreateQuadAndBuffer()
 	bufferDescIndex.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA dataIndex;
+	ZeroMemory(&dataIndex, sizeof(D3D11_SUBRESOURCE_DATA));
 	dataIndex.pSysMem = indicies;
 
 	hr = this->device->CreateBuffer(&bufferDescIndex, &dataIndex, &this->indexBufferQuad);
@@ -299,12 +392,13 @@ bool DeferredRendering::CreateQuadAndBuffer()
 		std::cerr << "Failed to create screeenQuad indexbuffer" << std::endl;
 		return false;
 	}
+	return true;
 }
 
 
 bool DeferredRendering::SetupPipeline()
 {
-	
+
 
 	if (!LoadShaders())
 	{
@@ -329,6 +423,17 @@ bool DeferredRendering::SetupPipeline()
 	//	std::cerr << "Error creating index buffer!" << std::endl;
 	//	return false;
 	//}
+	if (!CreateGraphicsBuffer())
+	{
+		std::cerr << "Error creating graphics buffers!" << std::endl;
+		return false;
+	}
+
+	if (!CreateQuadAndBuffer())
+	{
+		std::cerr << "Error creating quad or/and buffers!" << std::endl;
+		return false;
+	}
 
 	if (!CreateCbPerObj())
 	{
@@ -364,38 +469,7 @@ bool DeferredRendering::SetupPipeline()
 	return true;
 }
 
-void DeferredRendering::RenderGeometryPass(cbFrameObj* cbPerObj)
-{
-	UINT stride = sizeof(SimpleVertex);
-	UINT offset = 0;
 
-	float clearColor[4] = { 0.58f, 0.44, 0.86, 1.0 };
-	this->immediateConxtex->ClearRenderTargetView(this->rtv, clearColor);
-	this->immediateConxtex->ClearDepthStencilView(this->dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
-
-	this->immediateConxtex->IASetVertexBuffers(0, 1, &this->vertexBuffer, &stride, &offset);
-	//this->immediateConxtex->IASetIndexBuffer(this->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-	this->immediateConxtex->IASetInputLayout(this->inputLayout);
-	this->immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	this->immediateConxtex->VSSetShader(this->deferred_geometry_vs, nullptr, 0);
-	this->immediateConxtex->RSSetViewports(1, &this->viewport);
-	this->immediateConxtex->PSSetShader(this->deferred_geometry_ps, nullptr, 0);
-	this->immediateConxtex->PSSetShaderResources(0, 1, &this->textureSRVCharlie);
-	this->immediateConxtex->PSSetSamplers(0, 1, &this->sampler);
-	this->immediateConxtex->OMSetRenderTargets(1, &this->rtv, this->dsView);
-}
-
-void DeferredRendering::RenderLightPass()
-{
-	UINT stride = sizeof(SimpleVertex);
-	UINT offset = 0;
-	
-	immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	immediateConxtex->IASetVertexBuffers(0, 1, &vertexBufferQuad, &stride, &offset);
-	immediateConxtex->IASetIndexBuffer(indexBufferQuad, DXGI_FORMAT_R32_UINT, 0);
-	immediateConxtex->VSSetShader(deferred_light_vs, nullptr, 0);
-	immediateConxtex->PSSetShader(deferred_light_ps, nullptr, 0);
-}
 
 void DeferredRendering::Update(cbFrameObj* cbPerObj, float& rot, Light* lightBuffer, Camera& cam)
 {
@@ -473,7 +547,7 @@ bool DeferredRendering::ObjCreateBuffers()
 	D3D11_SUBRESOURCE_DATA vertexBufferData;
 	ZeroMemory(&vertexBufferData, sizeof(D3D11_SUBRESOURCE_DATA));
 	vertexBufferData.pSysMem = &this->object.getVerticies()[0];
-	
+
 	HRESULT hr = this->device->CreateBuffer(&vertexBufferDesc, &vertexBufferData, &this->vertexBuffer);
 
 	if (FAILED(hr))
@@ -485,33 +559,66 @@ bool DeferredRendering::ObjCreateBuffers()
 	return true;
 }
 
+void DeferredRendering::RenderGeometryPass(cbFrameObj* cbPerObj)
+{
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+
+	float clearColor[4] = { 0.58f, 0.44, 0.86, 1.0 };
+	this->immediateConxtex->ClearRenderTargetView(this->rtv, clearColor);
+	this->immediateConxtex->ClearDepthStencilView(this->dsView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1, 0);
+
+	this->immediateConxtex->IASetVertexBuffers(0, 1, &this->vertexBuffer, &stride, &offset);
+	//this->immediateConxtex->IASetIndexBuffer(this->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
+	this->immediateConxtex->IASetInputLayout(this->inputLayout);
+	this->immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	this->immediateConxtex->VSSetShader(this->deferred_geometry_vs, nullptr, 0);
+	this->immediateConxtex->RSSetViewports(1, &this->viewport);
+	this->immediateConxtex->PSSetShader(this->deferred_geometry_ps, nullptr, 0);
+	this->immediateConxtex->PSSetShaderResources(0, 1, &this->textureSRVCharlie);
+	this->immediateConxtex->PSSetSamplers(0, 1, &this->sampler);
+	this->immediateConxtex->OMSetRenderTargets(1, &this->rtv, this->dsView);
+}
+
 void DeferredRendering::RenderObj(cbFrameObj* cbPerObj, Camera& cam)
 {
 	/*for (int i = 0; i < object.getSubSetCount(); ++i)
 	{*/
 
-		this->translate = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
-		this->scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
-		this->rotate = dx::XMMatrixRotationRollPitchYawFromVector({ 0, 0, 0 });
-		this->worldCube = this->scale * this->translateCube * this->rotate;
+	this->translate = dx::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	this->scale = dx::XMMatrixScaling(1.0f, 1.0f, 1.0f);
+	this->rotate = dx::XMMatrixRotationRollPitchYawFromVector({ 0, 0, 0 });
+	this->worldCube = this->scale * this->translateCube * this->rotate;
 
-		this->view = dx::XMLoadFloat4x4(&cam.getView());
-		this->perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
+	this->view = dx::XMLoadFloat4x4(&cam.getView());
+	this->perspectiveProjection = dx::XMLoadFloat4x4(&cam.getPP());
 
-		dx::XMFLOAT4X4 saveMe;
-		
-		dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(worldCube));
-		cbPerObj->world = saveMe;
+	dx::XMFLOAT4X4 saveMe;
 
-		this->immediateConxtex->UpdateSubresource(this->constantBufferObj, 0, nullptr, cbPerObj, 0, 0);
-		this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
-		this->immediateConxtex->PSSetConstantBuffers(1, 1, &this->constantBufferObj);
-		this->immediateConxtex->PSSetShaderResources(0, 1, &textureSRVObj);
-		this->immediateConxtex->PSSetSamplers(0, 1, &this->CubesTextSamplerState);
+	dx::XMStoreFloat4x4(&saveMe, dx::XMMatrixTranspose(worldCube));
+	cbPerObj->world = saveMe;
 
-		//int indexStart = this->object.getSubsetsIndexStart()[i];
-		//int indexDrawAmunt = this->object.getSubsetsIndexStart()[i + 1] - this->object.getSubsetsIndexStart()[i];
-		//this->immediateConxtex->DrawIndexed(indexDrawAmunt, indexStart, 0);
-		this->immediateConxtex->Draw(object.getTotaltVerts(), 0);
+	this->immediateConxtex->UpdateSubresource(this->constantBufferObj, 0, nullptr, cbPerObj, 0, 0);
+	this->immediateConxtex->VSSetConstantBuffers(0, 1, &this->constantBufferObj);
+	this->immediateConxtex->PSSetConstantBuffers(1, 1, &this->constantBufferObj);
+	this->immediateConxtex->PSSetShaderResources(0, 1, &textureSRVObj);
+	this->immediateConxtex->PSSetSamplers(0, 1, &this->CubesTextSamplerState);
+
+	//int indexStart = this->object.getSubsetsIndexStart()[i];
+	//int indexDrawAmunt = this->object.getSubsetsIndexStart()[i + 1] - this->object.getSubsetsIndexStart()[i];
+	//this->immediateConxtex->DrawIndexed(indexDrawAmunt, indexStart, 0);
+	this->immediateConxtex->Draw(object.getTotaltVerts(), 0);
 	//}
+}
+
+void DeferredRendering::RenderLightPass()
+{
+	UINT stride = sizeof(SimpleVertex);
+	UINT offset = 0;
+
+	immediateConxtex->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	immediateConxtex->IASetVertexBuffers(0, 1, &vertexBufferQuad, &stride, &offset);
+	immediateConxtex->IASetIndexBuffer(indexBufferQuad, DXGI_FORMAT_R32_UINT, 0);
+	immediateConxtex->VSSetShader(deferred_light_vs, nullptr, 0);
+	immediateConxtex->PSSetShader(deferred_light_ps, nullptr, 0);
 }
