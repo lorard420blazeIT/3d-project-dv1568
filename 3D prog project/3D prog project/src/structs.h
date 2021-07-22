@@ -1,5 +1,7 @@
 #pragma once
 #include "pch.h"
+#include <wrl/client.h> 
+using Microsoft::WRL::ComPtr;
 
 struct  SimpleVertex
 {
@@ -67,4 +69,11 @@ struct SurfaceMaterial
 	dx::XMFLOAT4 difColor;
 	int textArrayIndex;
 	bool hasTexture;
+};
+
+struct TextureRenderTarget
+{
+	ComPtr<ID3D11Texture2D> texture;
+	ComPtr<ID3D11RenderTargetView> renderTargetView;
+	ComPtr<ID3D11ShaderResourceView> shaderResourceView;
 };

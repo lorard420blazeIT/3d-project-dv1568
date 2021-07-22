@@ -8,7 +8,7 @@ DeferredRendering::~DeferredRendering()
 {
 }
 
-void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Model &obj)
+void DeferredRendering::Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Model& obj, Window* win)
 {
 	this->device = device;
 	this->immediateConxtex = immadeiateContect;

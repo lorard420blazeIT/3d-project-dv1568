@@ -46,7 +46,7 @@ bool Engine::SetUp()
 		return false;
 	}
 
-	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, object);
+	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, object, &windowMain);
 
 	if (!defRender.ObjCreateBuffers())
 	{
