@@ -46,7 +46,7 @@ bool Engine::SetUp()
 		return false;
 	}
 
-	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, object);
+	defRender.Initialize(device, immediateConxtex, rtv, dsView, viewport, object, &windowMain);
 
 	if (!defRender.ObjCreateBuffers())
 	{
@@ -97,7 +97,7 @@ void Engine::Update()
 		defRender.Update(&frame, currentRotation, &lightFrame, cam);
 		defRender.RenderGeometryPass(&frame);
 		defRender.RenderObj(&frame, cam);
-
+		defRender.RenderLightPass();
 		swapChain->Present(0, 0);
 	}
 }

@@ -1,8 +1,6 @@
 #pragma once
 #define ALIGN16 __declspec(align(16))
 #include <DirectXMath.h>
-namespace dx = DirectX;
-
 #include <array>
 #include <d3d11.h>
 #include <Windows.h>
@@ -11,6 +9,10 @@ namespace dx = DirectX;
 #include <WinnT.h>
 #include <string>
 #include "Camera.h"
+#include <wrl/client.h>
+
+namespace dx = DirectX;
+using Microsoft::WRL::ComPtr;
 
 struct  SimpleVertex
 {
@@ -80,4 +82,11 @@ struct SurfaceMaterial
 	dx::XMFLOAT4 difColor;
 	int textArrayIndex;
 	bool hasTexture;
+};
+
+struct TextureRenderTarget
+{
+	ComPtr<ID3D11Texture2D> texture;
+	ComPtr<ID3D11RenderTargetView> renderTargetView;
+	ComPtr<ID3D11ShaderResourceView> shaderResourceView;
 };

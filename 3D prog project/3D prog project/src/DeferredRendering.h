@@ -8,8 +8,10 @@
 #include <vector>
 #include "structs.h"
 #include "Model.h"
+#include "Window.h"
 
 namespace dx = DirectX;
+const UINT BUFFER_COUNT = 3;
 
 class DeferredRendering
 {
@@ -42,9 +44,9 @@ private:
 	std::string filePathCharlie = "../Texture/this-is-fine-Charlie.png";
 
 	ID3D11ShaderResourceView* textureSRVObj;
+	Window* win;
 
 	ID3D11Buffer* vertexBuffer;
-	ID3D11Buffer* indexBuffer;
 	ID3D11Buffer* constantBufferObj;
 	ID3D11Buffer* constantBufferLight;
 
@@ -58,17 +60,19 @@ private:
 	dx::XMMATRIX translateCube = dx::XMMatrixIdentity();
 	dx::XMMATRIX worldCube = dx::XMMatrixIdentity();
 
-
-
 	Model object;
 	//Camera cam;
 
 	constantBufferMatrixes test;
 
+	TextureRenderTarget graphicsBuffer[BUFFER_COUNT];
+	ID3D11Texture2D* depthStencilBuffer;
+	ID3D11DepthStencilView* depthStencilView;
+
 public:
 	DeferredRendering();
 	~DeferredRendering();
-	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView *&rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Model& obj);
+	void Initialize(ID3D11Device*& device, ID3D11DeviceContext*& immadeiateContect, ID3D11RenderTargetView*& rtv, ID3D11DepthStencilView*& dsView, D3D11_VIEWPORT& viewport, Model& obj, Window* win);
 	bool LoadShaders();
 	bool LoadShaderData(const std::string& filename, std::string& vShaderByteCode);
 
@@ -80,6 +84,7 @@ public:
 	bool CreateTexture(std::string filepath, ID3D11ShaderResourceView*& textureSRV);
 	bool CreateSamplerState();
 	bool CreateQuadAndBuffer();
+	bool CreateGraphicsBuffer();
 
 	bool SetupPipeline();
 	void RenderGeometryPass(cbFrameObj* cbPerObj);
