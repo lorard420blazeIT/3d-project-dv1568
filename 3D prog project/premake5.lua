@@ -18,6 +18,8 @@ workspace "3D prog project"
         links{
             "d3d11"
         }
+        	vpaths{["Shaders"] = "**.hlsl", ["Headers"] = "**.h", ["Sources"] = {"**.c", "**.cpp"}, ["PreCompiledHeaders"] = "**pch", ["Main"] = "**main.cpp" }
+
         filter "configurations:Debug"
             libdirs{"lib/directXtk/x64/Debug/"}
             links{"DirectXTK"}
