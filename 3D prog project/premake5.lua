@@ -5,7 +5,7 @@ workspace "3D prog project"
 
     project "3D prog project"
         location "3D prog Project"
-        files {"%{prj.location}/src/**.cpp", "%{prj.location}/src/**.h","%{prj.location}/src/**.hlsl"}
+        files {"%{prj.location}/**.cpp", "%{prj.location}/**.h","%{prj.location}/**.hlsl"}
         kind "WindowedApp"
         language "C++"
         cppdialect "C++14"
@@ -31,19 +31,18 @@ workspace "3D prog project"
             defines{"NDEBUG", "_UNICODE", "UNICODE"}
             optimize "On"
 
-	files(src.."*hlsl")
-	shadermodel("5.0")
+    filter "*"
+        local ws = "$(ProjectDir)%%(Filename).cso"
+        files("*.hlsl")
+            shadermodel("5.0")
+            shaderobjectfileoutput(ws)
 
-	filter("files:VertexShader.hlsl")
-	shadertype("Vertex")
+        filter("files:**_vs.hlsl")
+            shadertype("Vertex")
 
-	filter("files:PixelShader.hlsl")
-	shadertype("Pixel")
+        filter("files:**_ps.hlsl")
+            shadertype("Pixel")
+            
 
-	filter("files:LightVertexShader.hlsl")
-	shadertype("Vertex")
-
-	filter("files:LightPixelShader.hlsl")
-	shadertype("Pixel")
 
 
